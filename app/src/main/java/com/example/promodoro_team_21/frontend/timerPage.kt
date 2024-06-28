@@ -94,7 +94,7 @@ fun Task(text: String, initialChecked: Boolean, onChecked: (Boolean) -> Unit) {
     Row(
         modifier = Modifier
             .padding(8.dp)
-            .background(Color.DarkGray, shape = RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(8.dp))
             .clickable {
                 isChecked = !isChecked
                 onChecked(isChecked)
@@ -102,7 +102,7 @@ fun Task(text: String, initialChecked: Boolean, onChecked: (Boolean) -> Unit) {
     ) {
         Text(
             text = text,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
                 .weight(1f)
                 .padding(8.dp)
@@ -142,7 +142,6 @@ fun TimerAndTaskList(modifier: Modifier = Modifier) {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(16.dp)
     ) {
         Timer(
             modifier = Modifier
@@ -155,7 +154,7 @@ fun TimerAndTaskList(modifier: Modifier = Modifier) {
             taskList = List(5) { "Task #$it" },
             onChecked = {},
             modifier = Modifier
-                .background(Color.Gray)
+                .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
                 .padding(16.dp)
                 .weight(1f)
