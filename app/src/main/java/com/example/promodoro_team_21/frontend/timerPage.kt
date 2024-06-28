@@ -1,7 +1,7 @@
 package com.example.promodoro_team_21.frontend
 
+import android.os.CountDownTimer
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,16 +19,39 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.foundation.clickable
 
 @Composable
 fun Timer(
-    hours: Int,
-    minutes: Int,
-    seconds: Int,
-    onPlay: () -> Unit,
-    onReset: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var timeLeft by remember { mutableStateOf(1500L * 1000L) } // 25 minutes in milliseconds
+    var isRunning by remember { mutableStateOf(false) }
+    var timer: CountDownTimer? = remember { null }
+
+    fun startTimer() {
+        timer?.cancel()
+        timer = object : CountDownTimer(timeLeft, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                timeLeft = millisUntilFinished
+            }
+
+            override fun onFinish() {
+                isRunning = false
+            }
+        }.start()
+        isRunning = true
+    }
+
+    fun resetTimer() {
+        timer?.cancel()
+        timeLeft = 1500L * 1000L // Reset to 25 minutes
+        isRunning = false
+    }
+
+    val minutes = (timeLeft / 1000) / 60
+    val seconds = (timeLeft / 1000) % 60
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -37,8 +60,8 @@ fun Timer(
             .padding(16.dp)
     ) {
         Text(
-            text = String.format("%02d:%02d:%02d", hours, minutes, seconds),
-            fontSize = 30.sp,
+            text = String.format("%02d:%02d", minutes, seconds),
+            fontSize = 48.sp,
             color = MaterialTheme.colorScheme.onPrimary
         )
         Spacer(modifier = Modifier.height(15.dp))
@@ -48,13 +71,13 @@ fun Timer(
             modifier = Modifier.fillMaxWidth()
         ) {
             IconButton(
-                onClick = onPlay,
+                onClick = { if (!isRunning) startTimer() },
                 colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.onPrimary)
             ) {
                 Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "Play")
             }
             IconButton(
-                onClick = onReset,
+                onClick = { resetTimer() },
                 colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.onPrimary)
             ) {
                 Icon(imageVector = Icons.Default.Refresh, contentDescription = "Reset")
@@ -71,10 +94,7 @@ fun Task(text: String, initialChecked: Boolean, onChecked: (Boolean) -> Unit) {
     Row(
         modifier = Modifier
             .padding(8.dp)
-            .background(
-                Color.DarkGray,
-                shape = RoundedCornerShape(8.dp)
-            )
+            .background(Color.DarkGray, shape = RoundedCornerShape(8.dp))
             .clickable {
                 isChecked = !isChecked
                 onChecked(isChecked)
@@ -119,17 +139,12 @@ fun TaskList(taskList: List<String>, onChecked: (Boolean) -> Unit, modifier: Mod
 @Composable
 fun TimerAndTaskList(modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
         Timer(
-            hours = 0,
-            minutes = 25,
-            seconds = 0,
-            onPlay = {},
-            onReset = {},
             modifier = Modifier
                 .background(Color.Black)
                 .padding(16.dp)
