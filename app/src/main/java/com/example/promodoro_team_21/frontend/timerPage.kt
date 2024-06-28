@@ -62,7 +62,7 @@ fun Timer(
         Text(
             text = String.format("%02d:%02d", minutes, seconds),
             fontSize = 48.sp,
-            color = MaterialTheme.colorScheme.onPrimary
+            color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(15.dp))
         Row(
