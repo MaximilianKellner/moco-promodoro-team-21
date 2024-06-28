@@ -1,5 +1,4 @@
-package com.example.ui_workshop_gruppe_b_solutions.ui.theme
-
+package com.example.promodoro_team_21.ui.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -18,7 +17,7 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 @Composable
-fun UI_Workshop_Gruppe_B_SolutionsTheme(
+fun Promodoroteam21Theme(
     darkTheme: Boolean = true, // Always use dark theme
     content: @Composable () -> Unit
 ) {

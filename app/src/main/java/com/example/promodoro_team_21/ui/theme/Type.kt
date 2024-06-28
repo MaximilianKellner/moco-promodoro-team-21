@@ -1,5 +1,4 @@
-package com.example.ui_workshop_gruppe_b_solutions.ui.theme
-
+package com.example.promodoro_team_21.ui.theme
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
