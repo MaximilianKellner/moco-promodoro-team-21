@@ -12,15 +12,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import com.example.promodoro_team_21.frontend.TimerAndTaskList
 import com.example.promodoro_team_21.notifications.TimerNotificationService
 import com.example.promodoro_team_21.ui.theme.Promodoroteam21Theme
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private lateinit var timerNotificationService: TimerNotificationService
@@ -29,26 +27,32 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         timerNotificationService = TimerNotificationService(this)
+        notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                //TODO Permission was granted
+                timerNotificationService.sendNotification()
+            } else {
+                // Permission denied
+                //TODO Benachrichtigung oder Dialog anzeigen, dass die Berechtigung benötigt wird
+            }
+        }
+        //TODO best practice??
+        checkAndRequestNotificationPermission()
+
         setContent {
             Promodoroteam21Theme {
                 Scaffold { innerPadding ->
                     TimerAndTaskList(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(innerPadding)
+                            .padding(innerPadding),
+                        onTimerFinish = { timerNotificationService.sendNotification()}
                     )
                 }
             }
         }
-        notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-            if (isGranted) {
-                //TODO Permission was granted
-            } else {
-                // Permission denied
-                //TODO Benachrichtigung oder Dialog anzeigen, dass die Berechtigung benötigt wird
-            }
-        }
     }
+
 
     private fun checkAndRequestNotificationPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
@@ -62,12 +66,17 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun TimerAndTaskListPreview() {
+    lateinit var timerNotificationService: TimerNotificationService
+    timerNotificationService = TimerNotificationService(context = LocalContext.current)
+
     Promodoroteam21Theme {
         Scaffold {
             TimerAndTaskList(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(it)
+                    .padding(it),
+                        onTimerFinish = { timerNotificationService.sendNotification()}
+
             )
         }
     }

@@ -20,12 +20,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.platform.LocalContext
+import com.example.promodoro_team_21.notifications.TimerNotificationService
 
 @Composable
 fun Timer(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onTimerFinish: () -> Unit // Callback für Timer-Abschluss
 ) {
-    var timeLeft by remember { mutableStateOf(1500L * 1000L) } // 25 minutes in milliseconds
+
+    val timerTime = 5000L // 25 Minuten in Millisekunden  1500L * 1000L
+
+    var timeLeft by remember { mutableStateOf(timerTime) }
     var isRunning by remember { mutableStateOf(false) }
     var timer: CountDownTimer? = remember { null }
 
@@ -38,6 +44,9 @@ fun Timer(
 
             override fun onFinish() {
                 isRunning = false
+
+                // Callback-Funktion aufruf für den Timer-Abschluss
+                onTimerFinish()
             }
         }.start()
         isRunning = true
@@ -45,7 +54,7 @@ fun Timer(
 
     fun resetTimer() {
         timer?.cancel()
-        timeLeft = 1500L * 1000L // Reset to 25 minutes
+        timeLeft = timerTime // Reset to 25 minutes
         isRunning = false
     }
 
@@ -137,7 +146,9 @@ fun TaskList(taskList: List<String>, onChecked: (Boolean) -> Unit, modifier: Mod
 }
 
 @Composable
-fun TimerAndTaskList(modifier: Modifier = Modifier) {
+fun TimerAndTaskList(modifier: Modifier = Modifier,
+                     onTimerFinish: () -> Unit // Callback für Timer-Abschluss hinzugefügt
+                     ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -147,7 +158,8 @@ fun TimerAndTaskList(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .background(Color.Black)
                 .padding(16.dp)
-                .weight(1f)
+                .weight(1f),
+            onTimerFinish = onTimerFinish
         )
 
         TaskList(
@@ -166,5 +178,9 @@ fun TimerAndTaskList(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun TimerAndTaskListPreview() {
-    TimerAndTaskList()
+    lateinit var timerNotificationService: TimerNotificationService
+    timerNotificationService = TimerNotificationService(context = LocalContext.current)
+
+    TimerAndTaskList(onTimerFinish = { timerNotificationService.sendNotification()}
+    )
 }
