@@ -39,7 +39,7 @@ class TimerNotificationService(private val context: Context) {
     }
 
     fun sendNotification() {
-        // Intent when user taps on the notification
+        // Intent wenn der user auf die Benachrichtigung tippt
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
@@ -55,7 +55,7 @@ class TimerNotificationService(private val context: Context) {
 
         with(NotificationManagerCompat.from(context)) {
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                // Permission not granted
+                // TODO Permission not granted
                 return
             }
             // Send notification
