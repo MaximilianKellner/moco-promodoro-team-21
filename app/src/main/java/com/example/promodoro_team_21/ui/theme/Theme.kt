@@ -7,8 +7,8 @@ import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
     primary = Color(0xFFFFFFFF),
-    secondary = Color(0xFF353535),
-    background = Color(0xFF000000),
+    secondary = Color(0xFF3B3E4D),
+    background = Color(0xFF252731),
     surface = Color(0xFF000000),
     onPrimary = Color.Black,
     onSecondary = Color.Black,
