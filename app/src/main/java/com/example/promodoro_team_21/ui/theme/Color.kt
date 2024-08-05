@@ -1,4 +1,4 @@
-package com.example.promodoro_team_21.view.theme
+package com.example.promodoro_team_21.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val DarkGrey = Color(0xFF333333)
