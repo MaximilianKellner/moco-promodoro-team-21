@@ -1,4 +1,4 @@
-package com.example.promodoro_team_21.ui.theme
+package com.example.promodoro_team_21.view.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
