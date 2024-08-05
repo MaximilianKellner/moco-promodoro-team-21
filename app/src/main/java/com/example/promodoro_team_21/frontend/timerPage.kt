@@ -181,5 +181,6 @@ fun TimerAndTaskListPreview() {
     lateinit var timerNotificationService: TimerNotificationService
     timerNotificationService = TimerNotificationService(context = LocalContext.current)
 
-    TimerAndTaskList(onTimerFinish = { timerNotificationService.sendNotification()})
+    TimerAndTaskList(onTimerFinish = { timerNotificationService.sendNotification()}
+    )
 }
