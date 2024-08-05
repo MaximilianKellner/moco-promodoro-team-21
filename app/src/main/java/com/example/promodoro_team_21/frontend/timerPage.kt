@@ -1,5 +1,8 @@
 package com.example.promodoro_team_21.frontend
 
+// Import necessary libraries and modules
+import androidx.compose.foundation.Canvas
+import androidx.compose.ui.graphics.drawscope.Stroke
 import android.os.CountDownTimer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -23,18 +26,25 @@ import androidx.compose.foundation.clickable
 import androidx.compose.ui.platform.LocalContext
 import com.example.promodoro_team_21.notifications.TimerNotificationService
 
+// Timer Composable function
 @Composable
 fun Timer(
     modifier: Modifier = Modifier,
-    onTimerFinish: () -> Unit // Callback für Timer-Abschluss
+    onTimerFinish: () -> Unit // Callback for timer completion
 ) {
 
-    val timerTime = 5000L // 25 Minuten in Millisekunden  1500L * 1000L
+    // Timer duration in milliseconds (25 minutes)
+    val timerTime = 1500L * 1000L
 
+    // State variables to track remaining time and timer status
     var timeLeft by remember { mutableStateOf(timerTime) }
     var isRunning by remember { mutableStateOf(false) }
     var timer: CountDownTimer? = remember { null }
 
+    // Derived state to track progress
+    val progress by remember { derivedStateOf { 1f - timeLeft / timerTime.toFloat() } }
+
+    // Function to start the timer
     fun startTimer() {
         timer?.cancel()
         timer = object : CountDownTimer(timeLeft, 1000) {
@@ -44,23 +54,24 @@ fun Timer(
 
             override fun onFinish() {
                 isRunning = false
-
-                // Callback-Funktion aufruf für den Timer-Abschluss
                 onTimerFinish()
             }
         }.start()
         isRunning = true
     }
 
+    // Function to reset the timer
     fun resetTimer() {
         timer?.cancel()
-        timeLeft = timerTime // Reset to 25 minutes
+        timeLeft = timerTime
         isRunning = false
     }
 
+    // Calculate minutes and seconds remaining
     val minutes = (timeLeft / 1000) / 60
     val seconds = (timeLeft / 1000) % 60
 
+    // Layout for the timer UI
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -68,23 +79,45 @@ fun Timer(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Text(
-            text = String.format("%02d:%02d", minutes, seconds),
-            fontSize = 48.sp,
-            color = MaterialTheme.colorScheme.primary
-        )
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(200.dp)
+                .padding(16.dp)
+        ) {
+            // Draw the progress arc
+            Canvas(modifier = Modifier.size(200.dp)) {
+                val sweepAngle = 360 * progress
+                drawArc(
+                    color = if (isRunning) Color.Blue else Color.Red,
+                    startAngle = -90f,
+                    sweepAngle = sweepAngle,
+                    useCenter = false,
+                    style = Stroke(width = 12.dp.toPx())
+                )
+            }
+
+            // Display the remaining time
+            Text(
+                text = String.format("%02d:%02d", minutes, seconds),
+                fontSize = 48.sp,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        }
         Spacer(modifier = Modifier.height(15.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.fillMaxWidth()
         ) {
+            // Button to start the timer
             IconButton(
                 onClick = { if (!isRunning) startTimer() },
                 colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.onPrimary)
             ) {
                 Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "Play")
             }
+            // Button to reset the timer
             IconButton(
                 onClick = { resetTimer() },
                 colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.onPrimary)
@@ -95,7 +128,7 @@ fun Timer(
     }
 }
 
-// Task Composable
+// Task Composable function to display individual tasks
 @Composable
 fun Task(text: String, initialChecked: Boolean, onChecked: (Boolean) -> Unit) {
     var isChecked by remember { mutableStateOf(initialChecked) }
@@ -109,6 +142,7 @@ fun Task(text: String, initialChecked: Boolean, onChecked: (Boolean) -> Unit) {
                 onChecked(isChecked)
             }
     ) {
+        // Display task text
         Text(
             text = text,
             color = MaterialTheme.colorScheme.primary,
@@ -117,6 +151,7 @@ fun Task(text: String, initialChecked: Boolean, onChecked: (Boolean) -> Unit) {
                 .padding(8.dp)
         )
 
+        // Checkbox for task completion status
         Checkbox(
             checked = isChecked,
             onCheckedChange = { isSelected ->
@@ -132,7 +167,7 @@ fun Task(text: String, initialChecked: Boolean, onChecked: (Boolean) -> Unit) {
     }
 }
 
-// TaskList Composable
+// TaskList Composable function to display a list of tasks
 @Composable
 fun TaskList(taskList: List<String>, onChecked: (Boolean) -> Unit, modifier: Modifier = Modifier) {
     val taskStateList = remember {
@@ -145,10 +180,12 @@ fun TaskList(taskList: List<String>, onChecked: (Boolean) -> Unit, modifier: Mod
     }
 }
 
+// Composable function combining the Timer and TaskList
 @Composable
-fun TimerAndTaskList(modifier: Modifier = Modifier,
-                     onTimerFinish: () -> Unit // Callback für Timer-Abschluss hinzugefügt
-                     ) {
+fun TimerAndTaskList(
+    modifier: Modifier = Modifier,
+    onTimerFinish: () -> Unit // Callback for timer completion
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -156,7 +193,7 @@ fun TimerAndTaskList(modifier: Modifier = Modifier,
     ) {
         Timer(
             modifier = Modifier
-                .background(Color.Black)
+                .background(MaterialTheme.colorScheme.onPrimary)
                 .padding(16.dp)
                 .weight(1f),
             onTimerFinish = onTimerFinish
@@ -174,13 +211,10 @@ fun TimerAndTaskList(modifier: Modifier = Modifier,
     }
 }
 
-// Previews for development and testing
+// Preview for development and testing
 @Preview(showBackground = true)
 @Composable
 fun TimerAndTaskListPreview() {
-    lateinit var timerNotificationService: TimerNotificationService
-    timerNotificationService = TimerNotificationService(context = LocalContext.current)
-
-    TimerAndTaskList(onTimerFinish = { timerNotificationService.sendNotification()}
-    )
+    // Eine Dummy-Funktion für die Vorschau
+    TimerAndTaskList(onTimerFinish = { /* Keine Aktion für die Vorschau */ })
 }
