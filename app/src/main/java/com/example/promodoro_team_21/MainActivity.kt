@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import com.example.promodoro_team_21.frontend.TimerAndTaskList
 import com.example.promodoro_team_21.notifications.TimerNotificationService
-import com.example.promodoro_team_21.ui.theme.Promodoroteam21Theme
+import com.example.promodoro_team_21.view.theme.Promodoroteam21Theme
 
 class MainActivity : ComponentActivity() {
     private lateinit var timerNotificationService: TimerNotificationService
