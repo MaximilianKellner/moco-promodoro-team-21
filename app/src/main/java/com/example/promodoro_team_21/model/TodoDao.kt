@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import com.example.promodoro_team_21.model.Todo
 
+@Dao
 interface TodoDao {
     @Query("select * from Todo order by createdAt desc")
     fun getAllTodo(): LiveData<List<Todo>>
@@ -14,5 +15,5 @@ interface TodoDao {
     fun addTodo(todo: Todo)
 
     @Query("Delete from Todo where id = :id")
-    fun deleteTodo(todo: Todo)
+    fun deleteTodo(id: Int)
 }
