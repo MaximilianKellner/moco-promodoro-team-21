@@ -1,3 +1,5 @@
+//Hier kommen alle CRUD Operationen hin
+
 package com.example.promodoro_team_21.model
 
 import androidx.lifecycle.LiveData
@@ -8,16 +10,12 @@ import com.example.promodoro_team_21.model.Todo
 
 @Dao
 interface TodoDao {
-    @Query("select * from Todo order by createdAt desc")
+    @Query("SELECT * FROM Todo ORDER BY createdAt DESC")
     fun getAllTodo(): LiveData<List<Todo>>
 
     @Insert
     fun addTodo(todo: Todo)
 
-    @Query("Delete from Todo where id = :id")
+    @Query("DELETE FROM Todo WHERE id = :id")
     fun deleteTodo(id: Int)
-
-    fun deleteTodoById(todo: Todo){
-        deleteTodo(todo.id)
-    }
 }
