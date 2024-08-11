@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
         notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
                 //TODO Permission was granted
-                timerNotificationService.sendNotification()
+                //timerNotificationService.sendNotification()
             } else {
                 // Permission denied
                 //TODO Benachrichtigung oder Dialog anzeigen, dass die Berechtigung benötigt wird
@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(innerPadding),
-                        onTimerFinish = { timerNotificationService.sendNotification()}
+                        onTimerFinish = {}
                     )
                 }
             }
@@ -75,8 +75,8 @@ fun TimerAndTaskListPreview() {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(it),
-                        onTimerFinish = { timerNotificationService.sendNotification()}
-
+                    //TODO Timer Notification Titel und Body
+                        onTimerFinish = { timerNotificationService.sendNotification("TMP Timer abgelaufen", "TMP Pomodoro Session beendet!")}
             )
         }
     }
