@@ -225,6 +225,8 @@ fun TimerAndTaskList(
     onTimerFinish: () -> Unit // Callback for timer completion
 ) {
     var taskList by remember { mutableStateOf(List(5) { "Task #$it" }) }
+    var showDialog by remember { mutableStateOf(false) }
+    var newTaskName by remember { mutableStateOf("") }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -253,26 +255,49 @@ fun TimerAndTaskList(
 
         // Add Task button
         FloatingActionButton(
-            onClick = {
-                // Add new task logic
-                taskList = taskList + "New Task"
-            },
+            onClick = { showDialog = true },
             modifier = Modifier
                 .align(Alignment.CenterEnd)
-                .padding(16.dp),
+                .padding(35.dp),
             containerColor = MaterialTheme.colorScheme.secondary
         ) {
             Icon(imageVector = Icons.Default.Add, contentDescription = "Add Task")
         }
+
+        // Dialog for adding new task
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                title = { Text(text = "New Task") },
+                text = {
+                    TextField(
+                        value = newTaskName,
+                        onValueChange = { newTaskName = it },
+                        label = { Text("Task Name") }
+                    )
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            taskList = taskList + newTaskName
+                            showDialog = false
+                            newTaskName = ""
+                        }
+                    ) {
+                        Text("Add")
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            showDialog = false
+                            newTaskName = ""
+                        }
+                    ) {
+                        Text("Cancel")
+                    }
+                }
+            )
+        }
     }
-}
-
-// Previews for development and testing
-@Preview(showBackground = true)
-@Composable
-fun TimerAndTaskListPreview() {
-    lateinit var timerNotificationService: TimerNotificationService
-    timerNotificationService = TimerNotificationService(context = LocalContext.current)
-
-    TimerAndTaskList(onTimerFinish = { timerNotificationService.sendNotification() })
 }
