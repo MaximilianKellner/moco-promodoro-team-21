@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
@@ -27,11 +28,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.foundation.clickable
 import androidx.compose.ui.platform.LocalContext
 import com.example.promodoro_team_21.notifications.TimerNotificationService
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun Timer(
@@ -73,7 +71,6 @@ fun Timer(
                 isRunning = false
                 timerFinished = true
                 onTimerFinish()
-
             }
         }.start()
         isRunning = true
@@ -214,43 +211,59 @@ fun Task(text: String, initialChecked: Boolean, onChecked: (Boolean) -> Unit) {
 // TaskList Composable
 @Composable
 fun TaskList(taskList: List<String>, onChecked: (Boolean) -> Unit, modifier: Modifier = Modifier) {
-    val taskStateList = remember {
-        taskList.toMutableStateList()
-    }
     LazyColumn(modifier = modifier.padding(16.dp)) {
-        items(taskStateList) { item ->
+        items(taskList) { item ->
             Task(text = item, initialChecked = false, onChecked = onChecked)
         }
     }
 }
 
+// TimerAndTaskList Composable
 @Composable
 fun TimerAndTaskList(
     modifier: Modifier = Modifier,
     onTimerFinish: () -> Unit // Callback for timer completion
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        Timer(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.onPrimary)
-                .padding(16.dp)
-                .weight(1f),
-            onTimerFinish = onTimerFinish
-        )
+    var taskList by remember { mutableStateOf(List(5) { "Task #$it" }) }
 
-        TaskList(
-            taskList = List(5) { "Task #$it" },
-            onChecked = {},
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
-                .padding(16.dp)
-                .weight(1f)
-        )
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            Timer(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.onPrimary)
+                    .padding(16.dp)
+                    .weight(1f),
+                onTimerFinish = onTimerFinish
+            )
+
+            TaskList(
+                taskList = taskList,
+                onChecked = {},
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.background)
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .weight(1f)
+            )
+        }
+
+        // Add Task button
+        FloatingActionButton(
+            onClick = {
+                // Add new task logic
+                taskList = taskList + "New Task"
+            },
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(16.dp),
+            containerColor = MaterialTheme.colorScheme.secondary
+        ) {
+            Icon(imageVector = Icons.Default.Add, contentDescription = "Add Task")
+        }
     }
 }
 
@@ -261,6 +274,5 @@ fun TimerAndTaskListPreview() {
     lateinit var timerNotificationService: TimerNotificationService
     timerNotificationService = TimerNotificationService(context = LocalContext.current)
 
-    TimerAndTaskList(onTimerFinish = { timerNotificationService.sendNotification()}
-    )
+    TimerAndTaskList(onTimerFinish = { timerNotificationService.sendNotification() })
 }
