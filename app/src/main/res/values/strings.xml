@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">promodoro-team-21</string>
+    <string name="app_name">Promodoro-Team-21</string>
+    <string name="notification_channel_name">Pomodoro-Notification-Channel</string>
+    <string name="notification_channel_description">Channel for Pomodoro Notifications</string>
 </resources>

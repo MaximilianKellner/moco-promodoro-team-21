@@ -26,8 +26,8 @@ class TimerNotificationService(private val context: Context) {
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Pomodoro Timer"
-            val descriptionText = "Notifications for Pomodoro Timer"
+            val name = context.getString(R.string.notification_channel_name)
+            val descriptionText = context.getString(R.string.notification_channel_description)
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText
@@ -38,8 +38,8 @@ class TimerNotificationService(private val context: Context) {
         }
     }
 
-    fun sendNotification() {
-        // Intent wenn der user auf die Benachrichtigung tippt
+    fun sendNotification(title: String, message: String) {
+        // Intent, when the notification is clicked
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
@@ -47,15 +47,15 @@ class TimerNotificationService(private val context: Context) {
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("Pomodoro Timer")
-            .setContentText("Die Pomodoro session ist vorbei.")
+            .setContentTitle(title)
+            .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
 
         with(NotificationManagerCompat.from(context)) {
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                // TODO Permission not granted
+                // Permission not granted
                 return
             }
             // Send notification
