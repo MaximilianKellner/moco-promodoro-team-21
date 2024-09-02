@@ -7,10 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.promodoro_team_21.R
 
 @Composable
 fun ToDoItem(
@@ -23,7 +25,7 @@ fun ToDoItem(
             .fillMaxWidth()
             .height(48.dp)
             .padding(horizontal = 8.dp)
-            .background(Color(0xFF333333), shape = RoundedCornerShape(8.dp))
+            .background(Color(0xFF3b3b3b), shape = RoundedCornerShape(8.dp))
             .clickable { onCheckChange(!isChecked) }
     ) {
         Row(
@@ -42,8 +44,12 @@ fun ToDoItem(
             )
             Checkbox(
                 checked = isChecked,
-                onCheckedChange = onCheckChange,
-                colors = CheckboxDefaults.colors(checkmarkColor = Color.White)
+                onCheckedChange = { onCheckChange(it) },
+                colors = CheckboxDefaults.colors(
+                    checkmarkColor = Color.White,
+                    uncheckedColor = colorResource(id = R.color.white), // Farbe des Checkbox-Rahmens
+                    checkedColor = colorResource(id = R.color.colorPrimary)   // Hintergrunffarbe, wenn angehakt
+                )
             )
         }
     }

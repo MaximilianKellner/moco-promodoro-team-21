@@ -7,10 +7,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.promodoro_team_21.R
 
 @Composable
 fun CustomTabBar(
@@ -45,7 +47,7 @@ fun CustomTabBar(
                         modifier = Modifier
                             .height(2.dp)
                             .width(20.dp)
-                            .background(Color.Blue, shape = RoundedCornerShape(1.dp))
+                            .background(colorResource(id = R.color.colorPrimary), shape = RoundedCornerShape(1.dp))
                     )
                 }
             }
