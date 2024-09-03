@@ -6,7 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.promodoro_team_21.MainApplication
-import com.example.promodoro_team_21.Todo
+import com.example.promodoro_team_21.model.Category
+import com.example.promodoro_team_21.model.Todo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -23,11 +24,11 @@ class TodoViewModel: ViewModel() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     //API wird für aktuelles Datum gebraucht
-    fun addTodo(title: String){
+    fun addTodo(title: String, category: Category){
         viewModelScope.launch(Dispatchers.IO){
             //Das ist eine Heavy Task. Wenn wir eine große Task hinizufügen und das Adden des
             // Todos lange dauert, soll ja nciht die ganze App blockiert sein. Deshalb Coroutinen
-            todoDao.addTodo(Todo(title = title, createdAt = Date.from(Instant.now())))
+            todoDao.addTodo(Todo(title = title, category = category, createdAt = Date.from(Instant.now())))
         }
     }
 
@@ -35,5 +36,9 @@ class TodoViewModel: ViewModel() {
         viewModelScope.launch(Dispatchers.IO){
             todoDao.deleteTodo(id = id)
         }
+    }
+
+    fun getTodoByCategory(category: Category): LiveData<List<Todo>>{
+        return todoDao.getTodoByCategory(category)
     }
 }
