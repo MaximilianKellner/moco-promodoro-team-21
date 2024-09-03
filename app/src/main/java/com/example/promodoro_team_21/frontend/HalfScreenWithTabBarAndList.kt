@@ -28,7 +28,6 @@ import com.example.promodoro_team_21.viewModel.TodoViewModel
 @Composable
 fun HalfScreenWithTabBarAndList() {
     var selectedTab by remember { mutableStateOf(0) }
-
     var showDialog by remember { mutableStateOf(false) }
     var newTaskName by remember { mutableStateOf("") }
     val todoVM = TodoViewModel()
@@ -72,8 +71,8 @@ fun HalfScreenWithTabBarAndList() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.5f) // Nimmt 50% des Bildschirms ein
-            .background(Color(0xFF202020)) // Setzt den Hintergrund auf #202020
+            .fillMaxHeight(0.5f)
+            .background(Color(0xFF202020))
     ) {
         Column(
             modifier = Modifier
@@ -92,8 +91,8 @@ fun HalfScreenWithTabBarAndList() {
             ) {
                 items(todoItems.size) { index ->
                     ToDoItem(
-                        title = todoItems[index],
-                        isChecked = false,
+                        title = todoItems[index].title,
+                        isChecked = false,  // TODO checkbox zustand
                         onCheckChange = {}
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -101,11 +100,10 @@ fun HalfScreenWithTabBarAndList() {
             }
         }
 
-        // Floating Action Button unten rechts mit colorPrimary
         FloatingActionButton(
             onClick = { showDialog = true },
             modifier = Modifier
-                .align(Alignment.BottomEnd) // Unten rechts
+                .align(Alignment.BottomEnd)
                 .padding(16.dp),
             containerColor = colorResource(id = R.color.colorPrimary)
         ) {
@@ -126,13 +124,9 @@ fun HalfScreenWithTabBarAndList() {
                 confirmButton = {
                     Button(
                         onClick = {
-                            //TODO TESTEN OB ALLES GELADEN WIRD
-                            //taskList = taskList + newTaskName
-                            //Hier sollte die Task der DB hinzugefügt werden
                             todoVM.addTodo(newTaskName, category)
                             showDialog = false
                             newTaskName = ""
-                            reload_lists()
                         }
                     ) {
                         Text("Add")
