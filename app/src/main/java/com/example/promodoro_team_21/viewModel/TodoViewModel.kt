@@ -22,7 +22,6 @@ class TodoViewModel: ViewModel() {
     val todoDao = MainApplication.todoDatabase.getTodoDao()
     val todoList: LiveData<List<Todo>> = todoDao.getAllTodo()
 
-    @RequiresApi(Build.VERSION_CODES.O)
     //API wird für aktuelles Datum gebraucht
     fun addTodo(title: String, category: Category){
         viewModelScope.launch(Dispatchers.IO){

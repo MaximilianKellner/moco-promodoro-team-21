@@ -14,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,9 +51,10 @@ fun HalfScreenWithTabBarAndList() {
         "Bericht schreiben"
     )
 
-    val uniItems = todoVM.getTodoByCategory(Category.UNI).value?.map { it.title } ?: emptyList()
-    val privatItems = todoVM.getTodoByCategory(Category.PRIVAT).value?.map { it.title } ?: emptyList()
-    val arbeitItems = todoVM.getTodoByCategory(Category.ARBEIT).value?.map { it.title } ?: emptyList()
+    val uniItems by todoVM.getTodoByCategory(Category.UNI).observeAsState(emptyList())
+    val privatItems by todoVM.getTodoByCategory(Category.PRIVAT).observeAsState(emptyList())
+    val arbeitItems by todoVM.getTodoByCategory(Category.ARBEIT).observeAsState(emptyList())
+
 
     // Die To-Do-Items basierend auf dem ausgewählten Tab
     val todoItems = when (selectedTab) {
@@ -101,7 +103,7 @@ fun HalfScreenWithTabBarAndList() {
 
         // Floating Action Button unten rechts mit colorPrimary
         FloatingActionButton(
-            onClick = { /* TODO: Handle FAB click */ },
+            onClick = { showDialog = true },
             modifier = Modifier
                 .align(Alignment.BottomEnd) // Unten rechts
                 .padding(16.dp),
@@ -130,6 +132,7 @@ fun HalfScreenWithTabBarAndList() {
                             todoVM.addTodo(newTaskName, category)
                             showDialog = false
                             newTaskName = ""
+                            reload_lists()
                         }
                     ) {
                         Text("Add")

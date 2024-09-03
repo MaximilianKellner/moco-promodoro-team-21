@@ -307,7 +307,7 @@ fun TimerAndTaskList(
                         onClick = {
                             taskList = taskList + newTaskName
                             //Hier sollte die Task der DB hinzugefügt werden
-                            todoVM.addTodo(newTaskName)
+                            //todoVM.addTodo(newTaskName, category)
                             showDialog = false
                             newTaskName = ""
                         }
