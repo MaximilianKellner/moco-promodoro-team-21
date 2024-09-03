@@ -83,7 +83,7 @@ fun HalfScreenWithTabBarAndList() {
             onClick = { /* TODO: Handle FAB click */ },
             modifier = Modifier
                 .align(Alignment.BottomEnd) // Unten rechts
-                .padding(10.dp),
+                .padding(16.dp),
             containerColor = colorResource(id = R.color.colorPrimary)
         ) {
             Icon(Icons.Filled.Add, contentDescription = "Add", tint = Color.White)
