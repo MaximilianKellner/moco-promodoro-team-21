@@ -79,4 +79,7 @@ dependencies {
     // To use Kotlin annotation processing tool (kapt)
     kapt("androidx.room:room-compiler:$room_version")
 
+    // Hinzufügen der Material Icons Extended-Bibliothek
+    implementation("androidx.compose.material:material-icons-extended:1.5.1")
+
 }
