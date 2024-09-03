@@ -306,8 +306,7 @@ fun TimerAndTaskList(
 @Preview(showBackground = true)
 @Composable
 fun TimerAndTaskListPreview() {
-    lateinit var timerNotificationService: TimerNotificationService
-    timerNotificationService = TimerNotificationService(context = LocalContext.current)
-
-    TimerAndTaskList(onTimerFinish = { timerNotificationService.sendNotification("titel", "message" ) })
+    TimerAndTaskList(onTimerFinish = {
+        // Dummy implementation for preview
+    })
 }
