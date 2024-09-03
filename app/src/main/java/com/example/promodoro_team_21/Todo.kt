@@ -1,11 +1,9 @@
-package com.example.promodoro_team_21.model
+package com.example.promodoro_team_21
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.time.Instant
 import java.util.Date
+import java.util.UUID
 
 @Entity
 data class Todo(

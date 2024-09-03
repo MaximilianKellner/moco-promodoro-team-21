@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.promodoro_team_21.model.Todo
+import com.example.promodoro_team_21.Todo
 
 @Dao
 interface TodoDao {
