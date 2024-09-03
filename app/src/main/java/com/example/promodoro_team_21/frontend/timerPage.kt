@@ -19,8 +19,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -30,9 +28,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.ui.platform.LocalContext
-import com.example.promodoro_team_21.Todo
-import com.example.promodoro_team_21.notifications.TimerNotificationService
 import com.example.promodoro_team_21.viewModel.TodoViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -312,7 +307,7 @@ fun TimerAndTaskList(
                         onClick = {
                             taskList = taskList + newTaskName
                             //Hier sollte die Task der DB hinzugefügt werden
-                            todoVM.addTodo(newTaskName)
+                            //todoVM.addTodo(newTaskName, category)
                             showDialog = false
                             newTaskName = ""
                         }
