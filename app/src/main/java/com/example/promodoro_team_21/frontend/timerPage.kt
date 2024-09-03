@@ -301,3 +301,13 @@ fun TimerAndTaskList(
         }
     }
 }
+
+// Previews for development and testing
+@Preview(showBackground = true)
+@Composable
+fun TimerAndTaskListPreview() {
+    lateinit var timerNotificationService: TimerNotificationService
+    timerNotificationService = TimerNotificationService(context = LocalContext.current)
+
+    TimerAndTaskList(onTimerFinish = { timerNotificationService.sendNotification("titel", "message" ) })
+}
