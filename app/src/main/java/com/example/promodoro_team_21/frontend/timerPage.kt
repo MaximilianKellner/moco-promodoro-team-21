@@ -1,7 +1,9 @@
 package com.example.promodoro_team_21.frontend
 
 // Import necessary libraries and modules
+import android.os.Build
 import android.os.CountDownTimer
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -29,7 +31,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.ui.platform.LocalContext
+import com.example.promodoro_team_21.Todo
 import com.example.promodoro_team_21.notifications.TimerNotificationService
+import com.example.promodoro_team_21.viewModel.TodoViewModel
 
 @Composable
 fun Timer(
@@ -219,6 +223,7 @@ fun TaskList(taskList: List<String>, onChecked: (Boolean) -> Unit, modifier: Mod
 }
 
 // TimerAndTaskList Composable
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TimerAndTaskList(
     modifier: Modifier = Modifier,
@@ -227,6 +232,7 @@ fun TimerAndTaskList(
     var taskList by remember { mutableStateOf(List(5) { "Task #$it" }) }
     var showDialog by remember { mutableStateOf(false) }
     var newTaskName by remember { mutableStateOf("") }
+    val todoVM = TodoViewModel()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -280,6 +286,8 @@ fun TimerAndTaskList(
                     Button(
                         onClick = {
                             taskList = taskList + newTaskName
+                            //Hier sollte die Task der DB hinzugefügt werden
+                            todoVM.addTodo(newTaskName)
                             showDialog = false
                             newTaskName = ""
                         }
