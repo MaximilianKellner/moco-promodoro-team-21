@@ -29,6 +29,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import com.example.promodoro_team_21.viewModel.TodoViewModel
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import androidx.compose.material.icons.filled.Pause
+
+
+
 
 @Composable
 fun Timer(
@@ -36,12 +43,13 @@ fun Timer(
     onTimerFinish: () -> Unit // Callback for timer completion
 ) {
     // Timer duration in milliseconds (25 minutes)
-    val timerTime = 5000L // 25 Minuten in Millisekunden  1500L * 1000L
+    val timerTime = 5000L // Beispiel: 5 Sekunden, ändern für Produktion (1500L * 1000L)
 
     // State variables to track remaining time and timer status
     var timeLeft by remember { mutableStateOf(timerTime) }
     var isRunning by remember { mutableStateOf(false) }
-    var timer: CountDownTimer? = remember { null }
+    var isPaused by remember { mutableStateOf(false) }
+    var timerJob by remember { mutableStateOf<Job?>(null) }
     var timerFinished by remember { mutableStateOf(false) }
 
     // Derived state to track progress
@@ -58,29 +66,38 @@ fun Timer(
         )
     )
 
-    // Function to start the timer
+    // Function to start or resume the timer
     fun startTimer() {
-        timer?.cancel()
-        timer = object : CountDownTimer(timeLeft, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                timeLeft = millisUntilFinished
+        if (!isRunning || isPaused) {
+            timerJob = CoroutineScope(Dispatchers.Main).launch {
+                while (timeLeft > 0) {
+                    delay(1000L)
+                    if (isPaused) continue
+                    timeLeft -= 1000L
+                }
+                if (timeLeft <= 0) {
+                    isRunning = false
+                    timerFinished = true
+                    onTimerFinish()
+                }
             }
-
-            override fun onFinish() {
-                isRunning = false
-                timerFinished = true
-                onTimerFinish()
-            }
-        }.start()
+        }
         isRunning = true
+        isPaused = false
         timerFinished = false
+    }
+
+    // Function to pause the timer
+    fun pauseTimer() {
+        isPaused = true
     }
 
     // Function to reset the timer
     fun resetTimer() {
-        timer?.cancel()
-        timeLeft = timerTime // Reset to 25 minutes
+        timerJob?.cancel()
+        timeLeft = timerTime // Reset to original time
         isRunning = false
+        isPaused = false
         timerFinished = false
     }
 
@@ -140,7 +157,7 @@ fun Timer(
             // Display the remaining time
             Text(
                 text = String.format("%02d:%02d", minutes, seconds),
-                fontSize = 60.sp,
+                fontSize = 50.sp,
                 color = MaterialTheme.colorScheme.primary
             )
         }
@@ -150,12 +167,21 @@ fun Timer(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Button to start the timer
+            // Button to start or pause the timer
             IconButton(
-                onClick = { if (!isRunning) startTimer() },
+                onClick = {
+                    if (isRunning && !isPaused) {
+                        pauseTimer()
+                    } else {
+                        startTimer()
+                    }
+                },
                 colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.secondary)
             ) {
-                Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "Play")
+                Icon(
+                    imageVector = if (isRunning && !isPaused) Icons.Default.Pause else Icons.Default.PlayArrow,
+                    contentDescription = if (isRunning && !isPaused) "Pause" else "Play"
+                )
             }
             // Button to reset the timer
             IconButton(
@@ -167,7 +193,6 @@ fun Timer(
         }
     }
 }
-
 // Task Composable
 @Composable
 fun Task(text: String, initialChecked: Boolean, onChecked: (Boolean) -> Unit) {
@@ -306,6 +331,7 @@ fun TimerAndTaskList(
 }
 
 // Previews for development and testing
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun TimerAndTaskListPreview() {
