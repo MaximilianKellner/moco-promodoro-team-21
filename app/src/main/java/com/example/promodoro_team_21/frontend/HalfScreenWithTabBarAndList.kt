@@ -32,30 +32,10 @@ fun HalfScreenWithTabBarAndList() {
     var newTaskName by remember { mutableStateOf("") }
     val todoVM = TodoViewModel()
 
-    // To-Do-Listen für jeden Tab
-    val uniItems_old = listOf(
-        "St1 Praktikum Aufgabe 3",
-        "Lernmaterial durchgehen",
-        "Hausaufgaben abgeben"
-    )
-
-    val privatItems_old = listOf(
-        "Einkaufen gehen",
-        "Freunde treffen",
-        "Film schauen"
-    )
-    val arbeitItems_old = listOf(
-        "E-Mails beantworten",
-        "Projektbesprechung vorbereiten",
-        "Bericht schreiben"
-    )
-
     val uniItems by todoVM.getTodoByCategory(Category.UNI).observeAsState(emptyList())
     val privatItems by todoVM.getTodoByCategory(Category.PRIVAT).observeAsState(emptyList())
     val arbeitItems by todoVM.getTodoByCategory(Category.ARBEIT).observeAsState(emptyList())
 
-
-    // Die To-Do-Items basierend auf dem ausgewählten Tab
     val todoItems = when (selectedTab) {
         0 -> uniItems
         1 -> privatItems
@@ -72,7 +52,7 @@ fun HalfScreenWithTabBarAndList() {
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.5f)
-            .background(Color(0xFF202020))
+            .background(colorResource(id = R.color.colorLighter))
     ) {
         Column(
             modifier = Modifier
@@ -90,10 +70,16 @@ fun HalfScreenWithTabBarAndList() {
                     .padding(horizontal = 8.dp)
             ) {
                 items(todoItems.size) { index ->
+                    val item = todoItems[index]
                     ToDoItem(
-                        title = todoItems[index].title,
-                        isChecked = false,  // TODO checkbox zustand
-                        onCheckChange = {}
+                        title = item.title,
+                        isChecked = false,  // Initial state for checkbox
+                        onCheckChange = { isChecked ->
+                            // Update logic, e.g., update the item in the database if needed
+                        },
+                        onDelete = {
+                            todoVM.deleteTodo(item.id) // Delete the item when checked
+                        }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                 }

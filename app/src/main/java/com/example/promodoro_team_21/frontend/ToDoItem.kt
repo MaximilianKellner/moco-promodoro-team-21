@@ -18,7 +18,8 @@ import com.example.promodoro_team_21.R
 fun ToDoItem(
     title: String,
     isChecked: Boolean,
-    onCheckChange: (Boolean) -> Unit
+    onCheckChange: (Boolean) -> Unit,
+    onDelete: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -26,7 +27,13 @@ fun ToDoItem(
             .height(48.dp)
             .padding(horizontal = 8.dp)
             .background(Color(0xFF3b3b3b), shape = RoundedCornerShape(8.dp))
-            .clickable { onCheckChange(!isChecked) }
+            .clickable {
+                val newCheckedState = !isChecked
+                onCheckChange(newCheckedState)
+                if (newCheckedState) {
+                    onDelete()
+                }
+            }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -44,7 +51,12 @@ fun ToDoItem(
             )
             Checkbox(
                 checked = isChecked,
-                onCheckedChange = { onCheckChange(it) },
+                onCheckedChange = {
+                    onCheckChange(it)
+                    if (it) {
+                        onDelete()
+                    }
+                },
                 colors = CheckboxDefaults.colors(
                     checkmarkColor = Color.White,
                     uncheckedColor = colorResource(id = R.color.white), // Farbe des Checkbox-Rahmens
@@ -61,6 +73,7 @@ fun ToDoItemPreview() {
     ToDoItem(
         title = "St1 Praktikum Aufgabe 3",
         isChecked = false,
-        onCheckChange = {}
+        onCheckChange = {},
+        onDelete = {} // Preview doesn't need to actually delete anything
     )
 }
