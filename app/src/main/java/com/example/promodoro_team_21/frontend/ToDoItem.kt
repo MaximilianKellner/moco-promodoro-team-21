@@ -13,11 +13,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.promodoro_team_21.R
+import com.example.promodoro_team_21.viewModel.TodoViewModel
 
 @Composable
 fun ToDoItem(
     title: String,
     isChecked: Boolean,
+    todoViewModel: TodoViewModel,
     onCheckChange: (Boolean) -> Unit,
     onDelete: () -> Unit
 ) {
@@ -28,11 +30,7 @@ fun ToDoItem(
             .padding(horizontal = 8.dp)
             .background( colorResource(id = R.color.colorLightest) , shape = RoundedCornerShape(8.dp))
             .clickable {
-                val newCheckedState = !isChecked
-                onCheckChange(newCheckedState)
-                if (newCheckedState) {
-                    onDelete()
-                }
+                //edit todo text edit here
             }
     ) {
         Row(
@@ -73,6 +71,7 @@ fun ToDoItemPreview() {
     ToDoItem(
         title = "St1 Praktikum Aufgabe 3",
         isChecked = false,
+        todoViewModel = TodoViewModel(),
         onCheckChange = {},
         onDelete = {}
     )

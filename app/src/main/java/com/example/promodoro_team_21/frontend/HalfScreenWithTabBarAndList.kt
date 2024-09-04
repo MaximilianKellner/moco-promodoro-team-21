@@ -74,6 +74,7 @@ fun HalfScreenWithTabBarAndList() {
                     ToDoItem(
                         title = item.title,
                         isChecked = false,  // Initial state for checkbox
+                        todoViewModel = todoVM,
                         onCheckChange = { isChecked ->
                         },
                         onDelete = {
