@@ -40,4 +40,12 @@ class TodoViewModel: ViewModel() {
     fun getTodoByCategory(category: Category): LiveData<List<Todo>>{
         return todoDao.getTodoByCategory(category)
     }
+
+    fun editToDo(todoItem: Todo, newTitle: String) {
+        todoItem.title = newTitle
+
+        viewModelScope.launch {
+            todoDao.editTodoTitle(newTitle, todoItem.id)
+        }
+    }
 }
