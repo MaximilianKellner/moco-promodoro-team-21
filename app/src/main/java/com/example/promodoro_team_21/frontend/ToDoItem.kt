@@ -26,7 +26,7 @@ fun ToDoItem(
             .fillMaxWidth()
             .height(48.dp)
             .padding(horizontal = 8.dp)
-            .background(Color(0xFF3b3b3b), shape = RoundedCornerShape(8.dp))
+            .background( colorResource(id = R.color.colorLightest) , shape = RoundedCornerShape(8.dp))
             .clickable {
                 val newCheckedState = !isChecked
                 onCheckChange(newCheckedState)
@@ -59,8 +59,8 @@ fun ToDoItem(
                 },
                 colors = CheckboxDefaults.colors(
                     checkmarkColor = Color.White,
-                    uncheckedColor = colorResource(id = R.color.white), // Farbe des Checkbox-Rahmens
-                    checkedColor = colorResource(id = R.color.colorPrimary)   // Hintergrunffarbe, wenn angehakt
+                    uncheckedColor = colorResource(id = R.color.white), // Color of Checkbox-Border
+                    checkedColor = colorResource(id = R.color.colorPrimary)   // Background-Color of Checkbox if checked
                 )
             )
         }
@@ -74,6 +74,6 @@ fun ToDoItemPreview() {
         title = "St1 Praktikum Aufgabe 3",
         isChecked = false,
         onCheckChange = {},
-        onDelete = {} // Preview doesn't need to actually delete anything
+        onDelete = {}
     )
 }

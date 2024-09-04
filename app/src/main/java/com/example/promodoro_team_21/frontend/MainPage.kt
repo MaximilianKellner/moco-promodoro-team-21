@@ -7,7 +7,7 @@ import androidx.compose.ui.tooling.preview.Preview
 @Composable
 fun MainPage(){
 
-    //TODO: Timer hälfte der main Page
+    //TODO: Timer hälfte hinzufügen
 
     HalfScreenWithTabBarAndList()
 }

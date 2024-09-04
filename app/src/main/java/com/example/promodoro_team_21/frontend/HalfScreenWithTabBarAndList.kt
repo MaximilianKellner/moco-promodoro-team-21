@@ -27,7 +27,7 @@ import com.example.promodoro_team_21.viewModel.TodoViewModel
 
 @Composable
 fun HalfScreenWithTabBarAndList() {
-    var selectedTab by remember { mutableStateOf(0) }
+    var selectedTab by remember { mutableIntStateOf(0) }
     var showDialog by remember { mutableStateOf(false) }
     var newTaskName by remember { mutableStateOf("") }
     val todoVM = TodoViewModel()
@@ -75,7 +75,6 @@ fun HalfScreenWithTabBarAndList() {
                         title = item.title,
                         isChecked = false,  // Initial state for checkbox
                         onCheckChange = { isChecked ->
-                            // Update logic, e.g., update the item in the database if needed
                         },
                         onDelete = {
                             todoVM.deleteTodo(item.id) // Delete the item when checked
@@ -86,6 +85,7 @@ fun HalfScreenWithTabBarAndList() {
             }
         }
 
+        //add new task button
         FloatingActionButton(
             onClick = { showDialog = true },
             modifier = Modifier
