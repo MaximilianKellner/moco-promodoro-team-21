@@ -18,15 +18,18 @@ import com.example.promodoro_team_21.R
 fun ToDoItem(
     title: String,
     isChecked: Boolean,
-    onCheckChange: (Boolean) -> Unit
+    onCheckChange: (Boolean) -> Unit,
+    onDelete: () -> Unit
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp)
             .padding(horizontal = 8.dp)
-            .background(Color(0xFF3b3b3b), shape = RoundedCornerShape(8.dp))
-            .clickable { onCheckChange(!isChecked) }
+            .background( colorResource(id = R.color.colorLightest) , shape = RoundedCornerShape(8.dp))
+            .clickable {
+                //edit todo text edit here
+            }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -44,11 +47,16 @@ fun ToDoItem(
             )
             Checkbox(
                 checked = isChecked,
-                onCheckedChange = { onCheckChange(it) },
+                onCheckedChange = {
+                    onCheckChange(it)
+                    if (it) {
+                        onDelete()
+                    }
+                },
                 colors = CheckboxDefaults.colors(
                     checkmarkColor = Color.White,
-                    uncheckedColor = colorResource(id = R.color.white), // Farbe des Checkbox-Rahmens
-                    checkedColor = colorResource(id = R.color.colorPrimary)   // Hintergrunffarbe, wenn angehakt
+                    uncheckedColor = colorResource(id = R.color.white), // Color of Checkbox-Border
+                    checkedColor = colorResource(id = R.color.colorPrimary)   // Background-Color of Checkbox if checked
                 )
             )
         }
@@ -61,6 +69,7 @@ fun ToDoItemPreview() {
     ToDoItem(
         title = "St1 Praktikum Aufgabe 3",
         isChecked = false,
-        onCheckChange = {}
+        onCheckChange = {},
+        onDelete = {}
     )
 }

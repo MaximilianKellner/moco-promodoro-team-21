@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.promodoro_team_21"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.androidx.room.common)
     implementation(libs.androidx.room.runtime.android)
     implementation(libs.androidx.adapters)
+    implementation(libs.androidx.runtime.livedata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -81,5 +82,4 @@ dependencies {
 
     // Hinzufügen der Material Icons Extended-Bibliothek
     implementation("androidx.compose.material:material-icons-extended:1.6.8")
-
 }
