@@ -8,8 +8,7 @@ import androidx.compose.ui.tooling.preview.Preview
 fun MainPage(){
 
     //TODO: Timer hälfte hinzufügen
-
-    HalfScreenWithTabBarAndList()
+    //HalfScreenWithTabBarAndList()
 }
 
 //Preview of the Mainpage
