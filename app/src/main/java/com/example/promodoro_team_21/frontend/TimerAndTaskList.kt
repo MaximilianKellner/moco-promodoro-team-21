@@ -6,13 +6,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.promodoro_team_21.timer.TimerViewModel
-import java.util.concurrent.TimeUnit
 import androidx.compose.material3.*
 import androidx.compose.ui.tooling.preview.Preview
 
 // TODO eig identisch mit TimerAndTaskList.
 @Composable
-fun TimerScreen(
+fun TimerAndTaskList(
+    modifier: Modifier = Modifier,
     viewModel: TimerViewModel = TimerViewModel(),
     onTimerFinish: () -> Unit // Callback for timer completion
 ) {
@@ -40,7 +40,7 @@ fun TimerScreen(
 fun TimerScreenPreview() {
 
     //TimerScreen with a dummy implementation of onTimerFinish
-    TimerScreen(onTimerFinish = {
+    TimerAndTaskList(onTimerFinish = {
         // Dummy implementation for preview
     })
 }

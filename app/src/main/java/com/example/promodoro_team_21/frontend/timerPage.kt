@@ -3,7 +3,6 @@ package com.example.promodoro_team_21.frontend
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
@@ -18,7 +17,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.promodoro_team_21.viewModel.TodoViewModel
 import kotlinx.coroutines.*
 import androidx.compose.material.icons.filled.Pause
 
@@ -180,29 +178,6 @@ fun Timer(
     }
 }
 
-// TimerAndTaskList Composable
-@Composable
-fun TimerAndTaskList(
-    modifier: Modifier = Modifier,
-    onTimerFinish: () -> Unit // Callback for timer completion
-) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-        ) {
-            Timer(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.onPrimary)
-                    .padding(16.dp)
-                    .weight(1f),
-                onTimerFinish = onTimerFinish
-            )
-            HalfScreenWithTabBarAndList()
-        }
-    }
-}
 
 // Previews for development and testing
 @Preview(showBackground = true)
