@@ -80,6 +80,6 @@ dependencies {
     kapt("androidx.room:room-compiler:$room_version")
 
     // Hinzufügen der Material Icons Extended-Bibliothek
-    implementation("androidx.compose.material:material-icons-extended:1.5.1")
+    implementation("androidx.compose.material:material-icons-extended:1.6.8")
 
 }

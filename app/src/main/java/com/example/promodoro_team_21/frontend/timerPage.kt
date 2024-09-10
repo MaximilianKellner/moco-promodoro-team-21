@@ -40,8 +40,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import androidx.compose.material.icons.filled.Pause
 
 
-
-
 @Composable
 fun Timer(
     modifier: Modifier = Modifier,
