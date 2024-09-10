@@ -1,18 +1,11 @@
 package com.example.promodoro_team_21.frontend
 
-// Import necessary libraries and modules
-import android.os.Build
-import android.os.CountDownTimer
-import androidx.annotation.RequiresApi
+
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
@@ -25,16 +18,9 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import com.example.promodoro_team_21.viewModel.TodoViewModel
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import androidx.compose.material.icons.filled.Pause
-
-
 
 
 @Composable
@@ -193,67 +179,13 @@ fun Timer(
         }
     }
 }
-// Task Composable
-@Composable
-fun Task(text: String, initialChecked: Boolean, onChecked: (Boolean) -> Unit) {
-    var isChecked by remember { mutableStateOf(initialChecked) }
-
-    Row(
-        modifier = Modifier
-            .padding(8.dp)
-            .background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(8.dp))
-            .clickable {
-                isChecked = !isChecked
-                onChecked(isChecked)
-            }
-    ) {
-        // Display task text
-        Text(
-            text = text,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .weight(1f)
-                .padding(12.dp)
-        )
-
-        // Checkbox for task completion status
-        Checkbox(
-            checked = isChecked,
-            onCheckedChange = { isSelected ->
-                isChecked = isSelected
-                onChecked(isSelected)
-            },
-            colors = CheckboxDefaults.colors(
-                checkmarkColor = MaterialTheme.colorScheme.primary,
-                checkedColor = MaterialTheme.colorScheme.onPrimary,
-                uncheckedColor = MaterialTheme.colorScheme.onPrimary
-            )
-        )
-    }
-}
-
-// TaskList Composable
-@Composable
-fun TaskList(taskList: List<String>, onChecked: (Boolean) -> Unit, modifier: Modifier = Modifier) {
-    LazyColumn(modifier = modifier.padding(16.dp)) {
-        items(taskList) { item ->
-            Task(text = item, initialChecked = false, onChecked = onChecked)
-        }
-    }
-}
 
 // TimerAndTaskList Composable
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TimerAndTaskList(
     modifier: Modifier = Modifier,
     onTimerFinish: () -> Unit // Callback for timer completion
 ) {
-    var taskList by remember { mutableStateOf(List(5) { "Task #$it" }) }
-    var showDialog by remember { mutableStateOf(false) }
-    var newTaskName by remember { mutableStateOf("") }
-    val todoVM = TodoViewModel()
-
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -267,71 +199,12 @@ fun TimerAndTaskList(
                     .weight(1f),
                 onTimerFinish = onTimerFinish
             )
-
-            TaskList(
-                taskList = taskList,
-                onChecked = {},
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.background)
-                    .fillMaxSize()
-                    .padding(16.dp)
-                    .weight(1f)
-            )
-        }
-
-        // Add Task button
-        FloatingActionButton(
-            onClick = { showDialog = true },
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .padding(35.dp),
-            containerColor = MaterialTheme.colorScheme.secondary
-        ) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = "Add Task")
-        }
-
-        // Dialog for adding new task
-        if (showDialog) {
-            AlertDialog(
-                onDismissRequest = { showDialog = false },
-                title = { Text(text = "New Task") },
-                text = {
-                    TextField(
-                        value = newTaskName,
-                        onValueChange = { newTaskName = it },
-                        label = { Text("Task Name") }
-                    )
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            taskList = taskList + newTaskName
-                            //Hier sollte die Task der DB hinzugefügt werden
-                            //todoVM.addTodo(newTaskName, category)
-                            showDialog = false
-                            newTaskName = ""
-                        }
-                    ) {
-                        Text("Add")
-                    }
-                },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            showDialog = false
-                            newTaskName = ""
-                        }
-                    ) {
-                        Text("Cancel")
-                    }
-                }
-            )
+            HalfScreenWithTabBarAndList()
         }
     }
 }
 
 // Previews for development and testing
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun TimerAndTaskListPreview() {
