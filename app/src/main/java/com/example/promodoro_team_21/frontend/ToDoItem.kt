@@ -13,13 +13,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.promodoro_team_21.R
-import com.example.promodoro_team_21.viewModel.TodoViewModel
 
 @Composable
 fun ToDoItem(
     title: String,
     isChecked: Boolean,
-    todoViewModel: TodoViewModel,
     onCheckChange: (Boolean) -> Unit,
     onDelete: () -> Unit
 ) {
@@ -71,7 +69,6 @@ fun ToDoItemPreview() {
     ToDoItem(
         title = "St1 Praktikum Aufgabe 3",
         isChecked = false,
-        todoViewModel = TodoViewModel(),
         onCheckChange = {},
         onDelete = {}
     )
