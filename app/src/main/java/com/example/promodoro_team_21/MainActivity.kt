@@ -11,38 +11,42 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import com.example.promodoro_team_21.frontend.TimerAndTaskList
-import com.example.promodoro_team_21.notifications.TimerNotificationService
+import com.example.promodoro_team_21.timer.NotificationViewModel
+import com.example.promodoro_team_21.timer.PomodoroTimerViewModel
 import com.example.promodoro_team_21.ui.theme.Promodoroteam21Theme
 
 class MainActivity : ComponentActivity() {
-    private lateinit var timerNotificationService: TimerNotificationService
     private lateinit var notificationPermissionLauncher: ActivityResultLauncher<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        timerNotificationService = TimerNotificationService(this)
+
         notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
-                //TODO Permission was granted
-                //timerNotificationService.sendNotification()
+                // Permission was granted
             } else {
                 // Permission denied
-                //TODO Benachrichtigung oder Dialog anzeigen, dass die Berechtigung benötigt wird
+                // Display a notification or dialog that the permission is needed
             }
         }
-        //TODO best practice??
         checkAndRequestNotificationPermission()
 
         setContent {
             Promodoroteam21Theme {
+                val context = LocalContext.current
+                val notificationViewModel = remember { NotificationViewModel(context) }
+                val timerViewModel = remember { PomodoroTimerViewModel(notificationViewModel) }
+
                 Scaffold { innerPadding ->
                     TimerAndTaskList(
+                        timerViewModel = timerViewModel,
+                        notificationViewModel = notificationViewModel,
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(innerPadding),
@@ -52,7 +56,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
 
     private fun checkAndRequestNotificationPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
@@ -66,17 +69,19 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun TimerAndTaskListPreview() {
-    lateinit var timerNotificationService: TimerNotificationService
-    timerNotificationService = TimerNotificationService(context = LocalContext.current)
+    val context = LocalContext.current
+    val notificationViewModel = NotificationViewModel(context)
+    val timerViewModel = PomodoroTimerViewModel(notificationViewModel)
 
     Promodoroteam21Theme {
         Scaffold {
             TimerAndTaskList(
+                timerViewModel = timerViewModel,
+                notificationViewModel = notificationViewModel,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(it),
-                    //TODO Timer Notification Titel und Body
-                        onTimerFinish = { timerNotificationService.sendNotification("TMP Timer abgelaufen", "TMP Pomodoro Session beendet!")}
+                onTimerFinish = {}
             )
         }
     }
