@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 class PomodoroTimerViewModel(private val context: Context) : ViewModel() {
 
     companion object {
-        const val WORK_DURATION = 1 * 10 * 1000L // 25 Minuten in Millisekunden
+        const val WORK_DURATION = 10 * 10 * 1000L // 25 Minuten in Millisekunden
         const val BREAK_DURATION = 5 * 60 * 1000L // 5 Minuten in Millisekunden
         const val NOTIFICATION_CHANNEL_ID = "pomodoro_channel"
     }

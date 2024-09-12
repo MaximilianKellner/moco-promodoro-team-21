@@ -51,7 +51,7 @@ fun HalfScreenWithTabBarAndList() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.5f)
+            .fillMaxHeight(1f)
             .background(colorResource(id = R.color.colorLighter))
     ) {
         Column(
