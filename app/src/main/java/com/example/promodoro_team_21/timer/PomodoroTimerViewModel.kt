@@ -1,4 +1,5 @@
 package com.example.promodoro_team_21.timer
+
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -21,8 +22,8 @@ import kotlinx.coroutines.launch
 class PomodoroTimerViewModel(private val context: Context) : ViewModel() {
 
     companion object {
-        const val WORK_DURATION = 1 * 10 * 1000L // 25 Minuten in Millisekunden
-        const val BREAK_DURATION = 5 * 60 * 1000L // 5 Minuten in Millisekunden
+        const val WORK_DURATION = 1 * 5 * 1000L // 25 Minuten in Millisekunden
+        const val BREAK_DURATION = 5 * 5 * 1000L // 5 Minuten in Millisekunden
         const val NOTIFICATION_CHANNEL_ID = "pomodoro_channel"
     }
 
@@ -73,12 +74,13 @@ class PomodoroTimerViewModel(private val context: Context) : ViewModel() {
             // Wechsel in die Pausenphase
             _isWorkingPhase.value = false
             _timeRemaining.value = BREAK_DURATION
+            _isRunning.value = false  // Timer stoppen, wenn die Arbeitsphase endet
         } else {
             // Wechsel zurück in die Arbeitsphase
             _isWorkingPhase.value = true
             _timeRemaining.value = WORK_DURATION
+            _isRunning.value = false  // Timer stoppen, wenn die Arbeitsphase endet
         }
-        startTimer()  // Automatischer Neustart des Timers in der neuen Phase
     }
 
     private fun updateNotification() {

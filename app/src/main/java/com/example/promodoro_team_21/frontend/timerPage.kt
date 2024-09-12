@@ -90,15 +90,8 @@ fun Timer(
                 fontSize = 50.sp,
                 color = MaterialTheme.colorScheme.primary
             )
-            // Text unter dem Countdown, der anzeigt, ob man sich in der Arbeitsphase oder Pausenphase befindet
-            Text(
-                text = if (isWorkingPhase) "Working" else "Pause",  // Anzeige des Status
-                fontSize = 20.sp,
-                color = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier.padding(top = 16.dp)
-            )
         }
-
+        Spacer(modifier = Modifier.height(16.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -143,6 +136,7 @@ fun Timer(
                 Icon(imageVector = Icons.Default.Refresh, contentDescription = "Reset")
             }
         }
+
     }
 }
 
