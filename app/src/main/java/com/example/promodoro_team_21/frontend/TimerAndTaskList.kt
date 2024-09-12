@@ -1,22 +1,21 @@
 package com.example.promodoro_team_21.frontend
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.example.promodoro_team_21.timer.old_TimerViewModel
-import androidx.compose.material3.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.promodoro_team_21.timer.PomodoroTimerViewModel
+import com.example.promodoro_team_21.timer.NotificationViewModel
 
-//Gesamte Timer- und Task-Liste Seite
 @Composable
 fun TimerAndTaskList(
+    timerViewModel: PomodoroTimerViewModel,
+    notificationViewModel: NotificationViewModel,
     modifier: Modifier = Modifier,
-    viewModel: old_TimerViewModel = old_TimerViewModel(),
     onTimerFinish: () -> Unit // Callback for timer completion
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -26,7 +25,7 @@ fun TimerAndTaskList(
                 .background(MaterialTheme.colorScheme.background)
         ) {
             Timer(
-                viewModel = PomodoroTimerViewModel(context = LocalContext.current),
+                viewModel = timerViewModel,
                 onSettingsClick = {},
                 modifier = Modifier
                     .fillMaxWidth()
@@ -37,13 +36,18 @@ fun TimerAndTaskList(
     }
 }
 
-//Preview of the TimerScreen
 @Preview
 @Composable
 fun TimerScreenPreview() {
+    val context = LocalContext.current
+    val notificationViewModel = NotificationViewModel(context)
+    val timerViewModel = PomodoroTimerViewModel(notificationViewModel)
 
-    //TimerScreen with a dummy implementation of onTimerFinish
-    TimerAndTaskList(onTimerFinish = {
-        // Dummy implementation for preview
-    })
+    TimerAndTaskList(
+        timerViewModel = timerViewModel,
+        notificationViewModel = notificationViewModel,
+        onTimerFinish = {
+            // Dummy implementation for preview
+        }
+    )
 }

@@ -1,18 +1,12 @@
 package com.example.promodoro_team_21.frontend
 
 import CustomTabBar
-import ToDoItem
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -71,13 +65,17 @@ fun HalfScreenWithTabBarAndList() {
             ) {
                 items(todoItems.size) { index ->
                     val item = todoItems[index]
+                    var isCheckedState by remember { mutableStateOf(false) }
+
                     ToDoItem(
                         title = item.title,
-                        isChecked = false,  // Initial state for checkbox
+                        isChecked = isCheckedState,  // Zustand der Checkbox
                         onCheckChange = { isChecked ->
+                            isCheckedState = isChecked
+                            // Hier könnte man den Zustand speichern oder andere Aktionen ausführen
                         },
                         onDelete = {
-                            todoVM.deleteTodo(item.id) // Delete the item when checked
+                            todoVM.deleteTodo(item.id) // Lösche das Item, wenn der Mülleimer-Button geklickt wird
                         }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -85,7 +83,7 @@ fun HalfScreenWithTabBarAndList() {
             }
         }
 
-        //add new task button
+        // Button zum Hinzufügen einer neuen Aufgabe
         FloatingActionButton(
             onClick = { showDialog = true },
             modifier = Modifier
@@ -95,7 +93,8 @@ fun HalfScreenWithTabBarAndList() {
         ) {
             Icon(Icons.Filled.Add, contentDescription = "Add", tint = Color.White)
         }
-        // Dialog for adding new task
+
+        // Dialog zum Hinzufügen einer neuen Aufgabe
         if (showDialog) {
             AlertDialog(
                 onDismissRequest = { showDialog = false },
