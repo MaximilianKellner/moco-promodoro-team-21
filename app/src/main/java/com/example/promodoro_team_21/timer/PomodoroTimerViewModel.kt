@@ -1,5 +1,6 @@
 package com.example.promodoro_team_21.timer
 
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,6 +16,7 @@ class PomodoroTimerViewModel(
     companion object {
         const val WORK_DURATION = 1 * 10 * 1000L // 25 Minuten in Millisekunden für Testzwecke
         const val BREAK_DURATION = 5 * 60 * 1000L // 5 Minuten in Millisekunden
+
     }
 
     private val _timeRemaining = MutableLiveData<Long>(WORK_DURATION)
@@ -60,12 +62,13 @@ class PomodoroTimerViewModel(
             // Wechsel in die Pausenphase
             _isWorkingPhase.value = false
             _timeRemaining.value = BREAK_DURATION
+            _isRunning.value = false  // Timer stoppen, wenn die Arbeitsphase endet
         } else {
             // Wechsel zurück in die Arbeitsphase
             _isWorkingPhase.value = true
             _timeRemaining.value = WORK_DURATION
+            _isRunning.value = false  // Timer stoppen, wenn die Arbeitsphase endet
         }
-        startTimer()  // Automatischer Neustart des Timers in der neuen Phase
     }
 
     private fun updateNotification() {
