@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.promodoro_team_21.timer.PomodoroTimerViewModel
+import com.example.promodoro_team_21.viewModel.PomodoroTimerViewModel
 
 @Composable
 fun Timer(

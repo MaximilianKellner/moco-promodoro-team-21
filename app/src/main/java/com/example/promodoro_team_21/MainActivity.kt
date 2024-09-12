@@ -17,8 +17,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import com.example.promodoro_team_21.frontend.TimerAndTaskList
-import com.example.promodoro_team_21.timer.NotificationViewModel
-import com.example.promodoro_team_21.timer.PomodoroTimerViewModel
+import com.example.promodoro_team_21.viewModel.NotificationViewModel
+import com.example.promodoro_team_21.viewModel.PomodoroTimerViewModel
 import com.example.promodoro_team_21.ui.theme.Promodoroteam21Theme
 
 class MainActivity : ComponentActivity() {

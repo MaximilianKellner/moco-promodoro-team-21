@@ -1,5 +1,4 @@
-package com.example.promodoro_team_21.timer
-
+package com.example.promodoro_team_21.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,7 +15,6 @@ class PomodoroTimerViewModel(
     companion object {
         const val WORK_DURATION = 1 * 10 * 1000L // 25 Minuten in Millisekunden für Testzwecke
         const val BREAK_DURATION = 5 * 60 * 1000L // 5 Minuten in Millisekunden
-
     }
 
     private val _timeRemaining = MutableLiveData<Long>(WORK_DURATION)
