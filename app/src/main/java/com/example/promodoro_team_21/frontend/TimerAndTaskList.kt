@@ -8,8 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.promodoro_team_21.timer.PomodoroTimerViewModel
-import com.example.promodoro_team_21.timer.NotificationViewModel
+import com.example.promodoro_team_21.viewModel.PomodoroTimerViewModel
+import com.example.promodoro_team_21.viewModel.NotificationViewModel
 
 @Composable
 fun TimerAndTaskList(

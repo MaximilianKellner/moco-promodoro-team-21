@@ -1,4 +1,4 @@
-package com.example.promodoro_team_21.timer
+package com.example.promodoro_team_21.viewModel
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -49,7 +49,9 @@ class NotificationViewModel(private val context: Context) : ViewModel() {
     }
 
     private fun createNotification(statusText: String, timeFormatted: String): Notification {
-        val intent = Intent(context, MainActivity::class.java)
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
 
         val pendingIntent = PendingIntent.getActivity(
             context,
