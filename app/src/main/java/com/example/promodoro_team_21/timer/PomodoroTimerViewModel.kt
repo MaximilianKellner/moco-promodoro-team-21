@@ -51,23 +51,34 @@ class PomodoroTimerViewModel(private val context: Context) : ViewModel() {
                 _timeRemaining.value = _timeRemaining.value?.minus(1000L)
                 updateNotification()
             }
-            // Wenn Arbeitsphase beendet ist, in Pausenphase wechseln
-            if (_isWorkingPhase.value == true) {
-                _timeRemaining.value = BREAK_DURATION
-            } else {
-                _timeRemaining.value = WORK_DURATION
-            }
-            _isWorkingPhase.value = _isWorkingPhase.value?.not()
-            updateNotification()
-            startTimer()  // Startet die nächste Phase (Arbeit oder Pause)
+            // Wenn der Timer abgelaufen ist, Phase wechseln und automatisch den Timer neu starten
+            switchPhase()
         }
     }
 
-    fun stopTimer() {
-        timerJob?.cancel()
-        timerJob = null
+    fun pauseTimer() {
+        timerJob?.cancel()  // Pausiert den Timer, ohne die verbleibende Zeit zurückzusetzen
         _isRunning.value = false
-        _timeRemaining.value = if (_isWorkingPhase.value == true) WORK_DURATION else BREAK_DURATION
+    }
+
+    fun resetTimer() {
+        timerJob?.cancel()
+        _isRunning.value = false
+        _timeRemaining.value = WORK_DURATION  // Setze den Timer auf WORK_DURATION zurück
+        _isWorkingPhase.value = true // Setze die Arbeitsphase zurück
+    }
+
+    private fun switchPhase() {
+        if (_isWorkingPhase.value == true) {
+            // Wechsel in die Pausenphase
+            _isWorkingPhase.value = false
+            _timeRemaining.value = BREAK_DURATION
+        } else {
+            // Wechsel zurück in die Arbeitsphase
+            _isWorkingPhase.value = true
+            _timeRemaining.value = WORK_DURATION
+        }
+        startTimer()  // Automatischer Neustart des Timers in der neuen Phase
     }
 
     private fun updateNotification() {

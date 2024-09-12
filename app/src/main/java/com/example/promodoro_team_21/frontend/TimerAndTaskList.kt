@@ -27,6 +27,7 @@ fun TimerAndTaskList(
         ) {
             Timer(
                 viewModel = PomodoroTimerViewModel(context = LocalContext.current),
+                onSettingsClick = {},
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(30.dp)
