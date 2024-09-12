@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -21,7 +22,8 @@ import com.example.promodoro_team_21.timer.PomodoroTimerViewModel
 @Composable
 fun Timer(
     viewModel: PomodoroTimerViewModel,  // ViewModel, um den Timer zu steuern
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onSettingsClick: () -> Unit  // Callback für den Settings-Button
 ) {
     // Verwenden von observeAsState, um LiveData im Composable zu überwachen
     val remainingTime by viewModel.timeRemaining.observeAsState(viewModel.timeRemaining.value ?: 0L)
@@ -88,6 +90,13 @@ fun Timer(
                 fontSize = 50.sp,
                 color = MaterialTheme.colorScheme.primary
             )
+            // Text unter dem Countdown, der anzeigt, ob man sich in der Arbeitsphase oder Pausenphase befindet
+            Text(
+                text = if (isWorkingPhase) "Working" else "Pause",  // Anzeige des Status
+                fontSize = 20.sp,
+                color = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier.padding(top = 16.dp)
+            )
         }
 
         Row(
@@ -99,7 +108,7 @@ fun Timer(
             IconButton(
                 onClick = {
                     if (isRunning) {
-                        viewModel.stopTimer()
+                        viewModel.pauseTimer()
                     } else {
                         viewModel.startTimer()
                     }
@@ -113,9 +122,20 @@ fun Timer(
                     contentDescription = if (isRunning) "Pause" else "Play"
                 )
             }
+
+            // Button für die Einstellungen
+            IconButton(
+                onClick = { onSettingsClick() },
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary
+                )
+            ) {
+                Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
+            }
+
             // Button zum Zurücksetzen des Timers
             IconButton(
-                onClick = { viewModel.stopTimer() },
+                onClick = { viewModel.resetTimer() },
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = MaterialTheme.colorScheme.secondary
                 )
@@ -125,3 +145,4 @@ fun Timer(
         }
     }
 }
+
