@@ -1,8 +1,12 @@
+package com.example.promodoro_team_21.frontend
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,41 +28,50 @@ fun ToDoItem(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(48.dp)
+            .height(64.dp)
             .padding(horizontal = 8.dp)
-            .background( colorResource(id = R.color.colorLightest) , shape = RoundedCornerShape(8.dp))
+            .background(colorResource(id = R.color.colorLightest), shape = RoundedCornerShape(8.dp))
             .clickable {
-                //edit todo text edit here
+                // Optional: irgendwelche Aktionen beim Klicken auf den ganzen Bereich
             }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.Start, // 1. Sicherstellen, dass der Inhalt von links angeordnet ist
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp)
-                .padding(end = 0.dp)
+                .fillMaxHeight()
+                .padding(start = 16.dp, end = 8.dp)
         ) {
-            Text(
-                text = title,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.W500,
-                color = Color.White
-            )
             Checkbox(
                 checked = isChecked,
                 onCheckedChange = {
                     onCheckChange(it)
-                    if (it) {
-                        onDelete()
-                    }
                 },
                 colors = CheckboxDefaults.colors(
                     checkmarkColor = Color.White,
-                    uncheckedColor = colorResource(id = R.color.white), // Color of Checkbox-Border
-                    checkedColor = colorResource(id = R.color.colorPrimary)   // Background-Color of Checkbox if checked
+                    uncheckedColor = colorResource(id = R.color.white), // Farbe der Checkbox-Rand
+                    checkedColor = colorResource(id = R.color.colorPrimary) // Hintergrundfarbe der Checkbox, wenn aktiviert
                 )
             )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = title,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.W500,
+                color = Color.White,
+                modifier = Modifier.weight(1f) // 2. Hinzufügen des Gewicht-Modifiers, damit der Text den verbleibenden Raum einnimmt
+            )
+            IconButton(
+                onClick = { onDelete() },
+                colors = IconButtonDefaults.iconButtonColors(containerColor = Color.Transparent),
+                modifier = Modifier.align(Alignment.CenterVertically) // 3. Sicherstellen, dass der Button vertikal zentriert ist
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete",
+                    tint = colorResource(id = R.color.colorPrimary)
+                )
+            }
         }
     }
 }
