@@ -25,7 +25,7 @@
       <SelectionState runConfigName="MainPagePreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="TimerScreenPreview">
+      <SelectionState runConfigName="TimerPageScreenPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

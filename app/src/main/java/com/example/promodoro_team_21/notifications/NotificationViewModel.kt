@@ -3,13 +3,10 @@ package com.example.promodoro_team_21.notifications
 import android.content.Context
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.promodoro_team_21.lifecycle.AppLifecycleObserver
-import com.example.promodoro_team_21.timer.TimerViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.example.promodoro_team_21.timer.old_TimerViewModel
 
-class NotificationViewModel(context: Context, private val timerViewModel: TimerViewModel) : ViewModel() {
+class NotificationViewModel(context: Context, private val timerViewModel: old_TimerViewModel) : ViewModel() {
 
     private val notificationRepository = NotificationRepository(context)
     private val appLifecycleObserver = AppLifecycleObserver(::sendNotification)
