@@ -1,6 +1,5 @@
 package com.example.promodoro_team_21.frontend
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
@@ -17,7 +16,8 @@ import com.example.promodoro_team_21.timer.PomodoroTimerViewModel
 fun TimerAndTaskList(
     modifier: Modifier = Modifier,
     viewModel: old_TimerViewModel = old_TimerViewModel(),
-    onTimerFinish: () -> Unit // Callback for timer completion
+    onTimerFinish: () -> Unit, // Callback for timer completion
+    onSettingsClick: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -27,7 +27,7 @@ fun TimerAndTaskList(
         ) {
             Timer(
                 viewModel = PomodoroTimerViewModel(context = LocalContext.current),
-                onSettingsClick = { TODO("hier  wird settings.kt aufgerufen!") },
+                onSettingsClick = { onSettingsClick() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(30.dp)
@@ -45,5 +45,7 @@ fun TimerScreenPreview() {
     //TimerScreen with a dummy implementation of onTimerFinish
     TimerAndTaskList(onTimerFinish = {
         // Dummy implementation for preview
+    }, onSettingsClick = {
+        println("Settingsbutton clicked!")
     })
 }

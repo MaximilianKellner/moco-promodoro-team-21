@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.androidx.room.runtime.android)
     implementation(libs.androidx.adapters)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.navigation.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

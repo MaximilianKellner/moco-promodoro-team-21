@@ -125,7 +125,7 @@ fun Timer(
 
             // Button für die Einstellungen
             IconButton(
-                onClick = { onSettingsClick() },
+                onClick = onSettingsClick,
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = MaterialTheme.colorScheme.secondary
                 )
