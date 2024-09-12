@@ -19,9 +19,6 @@
       <SelectionState runConfigName="TimerAndTaskListPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="HalfScreenWithTabBarAndListPreview">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="MainPagePreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
