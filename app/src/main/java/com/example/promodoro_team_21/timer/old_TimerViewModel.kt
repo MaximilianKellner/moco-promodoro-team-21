@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class TimerViewModel : ViewModel() {
+class old_TimerViewModel : ViewModel() {
     // Timer-Einstellungen (25 Minuten und 5 Minuten Pause)
     private val workTime = 1500L * 1000L // 25 Minuten in Millisekunden
     private val shortBreakTime = 5L * 60L * 1000L // 5 Minuten in Millisekunden

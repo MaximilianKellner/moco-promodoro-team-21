@@ -1,19 +1,22 @@
 package com.example.promodoro_team_21.frontend
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.promodoro_team_21.timer.TimerViewModel
+import com.example.promodoro_team_21.timer.old_TimerViewModel
 import androidx.compose.material3.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.promodoro_team_21.timer.PomodoroTimerViewModel
 
-// TODO eig identisch mit TimerAndTaskList.
+//Gesamte Timer- und Task-Liste Seite
 @Composable
 fun TimerAndTaskList(
     modifier: Modifier = Modifier,
-    viewModel: TimerViewModel = TimerViewModel(),
+    viewModel: old_TimerViewModel = old_TimerViewModel(),
     onTimerFinish: () -> Unit // Callback for timer completion
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -23,11 +26,11 @@ fun TimerAndTaskList(
                 .background(MaterialTheme.colorScheme.background)
         ) {
             Timer(
+                viewModel = PomodoroTimerViewModel(context = LocalContext.current),
+                onSettingsClick = {},
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.onPrimary)
-                    .padding(16.dp)
-                    .weight(1f),
-                onTimerFinish = onTimerFinish
+                    .fillMaxWidth()
+                    .padding(30.dp)
             )
             HalfScreenWithTabBarAndList()
         }
