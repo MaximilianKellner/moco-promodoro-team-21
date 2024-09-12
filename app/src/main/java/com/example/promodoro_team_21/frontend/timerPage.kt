@@ -80,16 +80,25 @@ fun Timer(
                 )
             }
 
-            // Anzeige der verbleibenden Zeit
-            Text(
-                text = String.format(
-                    "%02d:%02d",
-                    (remainingTime / 60000),
-                    (remainingTime % 60000) / 1000
-                ),
-                fontSize = 50.sp,
-                color = MaterialTheme.colorScheme.primary
-            )
+            // Anzeige der verbleibenden Zeit und kleiner untertitel, work/pause
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = String.format(
+                        "%02d:%02d",
+                        (remainingTime / 60000),
+                        (remainingTime % 60000) / 1000
+                    ),
+                    fontSize = 40.sp,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = if (isWorkingPhase) "Arbeit" else "Entspannung",
+                    fontSize = 15.sp,
+                    color = Color(0xFF7b7b7b)
+                )
+            }
         }
         Spacer(modifier = Modifier.height(16.dp))
         Row(
