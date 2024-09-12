@@ -8,13 +8,12 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.promodoro_team_21.timer.PomodoroTimerViewModel
@@ -24,10 +23,10 @@ fun Timer(
     viewModel: PomodoroTimerViewModel,  // ViewModel, um den Timer zu steuern
     modifier: Modifier = Modifier
 ) {
-    // State-Variable, die die verbleibende Zeit und den Status beobachtet
-    val remainingTime by remember { mutableStateOf(viewModel.timeRemaining) }
-    val isRunning by remember { mutableStateOf(viewModel.isRunning) }
-    val isWorkingPhase by remember { mutableStateOf(viewModel.isWorkingPhase) }
+    // Verwenden von observeAsState, um LiveData im Composable zu überwachen
+    val remainingTime by viewModel.timeRemaining.observeAsState(viewModel.timeRemaining.value ?: 0L)
+    val isRunning by viewModel.isRunning.observeAsState(viewModel.isRunning.value ?: false)
+    val isWorkingPhase by viewModel.isWorkingPhase.observeAsState(viewModel.isWorkingPhase.value ?: true)
 
     // Layout für die Timer UI
     Column(
@@ -48,12 +47,13 @@ fun Timer(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                val sweepAngle = 360f * (remainingTime / (if (isWorkingPhase) 25 * 60 * 1000f else 5 * 60 * 1000f))
+                val totalDuration = if (isWorkingPhase) PomodoroTimerViewModel.WORK_DURATION else PomodoroTimerViewModel.BREAK_DURATION
+                val sweepAngle = 360f * (remainingTime / totalDuration.toFloat())
                 val strokeWidth = 30f
 
                 // Zeichnen des vollen Kreises (Hintergrund)
                 drawArc(
-                    color = Color.Gray.copy(alpha = 0.3f),
+                    color = Color.Blue.copy(alpha = 0.3f),
                     startAngle = 0f,
                     sweepAngle = 360f,
                     useCenter = false,
@@ -66,7 +66,7 @@ fun Timer(
 
                 // Zeichnen des Fortschrittsbogens
                 drawArc(
-                    color = if (isWorkingPhase) Color.Blue else Color.Red,
+                    color = Color.Blue,
                     startAngle = -90f,
                     sweepAngle = sweepAngle,
                     useCenter = false,
@@ -124,12 +124,4 @@ fun Timer(
             }
         }
     }
-}
-
-// Preview der Timer-Seite
-@Preview
-@Composable
-fun TimerPageScreenPreview() {
-    // Timer-Seite mit einem Dummy-ViewModel
-    Timer(viewModel = PomodoroTimerViewModel(context = LocalContext.current))
 }

@@ -1,5 +1,4 @@
 package com.example.promodoro_team_21.timer
-
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,6 +8,8 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.promodoro_team_21.MainActivity
@@ -20,20 +21,19 @@ import kotlinx.coroutines.launch
 class PomodoroTimerViewModel(private val context: Context) : ViewModel() {
 
     companion object {
-        const val WORK_DURATION = 25 * 60 * 1000L // 25 Minuten in Millisekunden
+        const val WORK_DURATION = 1 * 10 * 1000L // 25 Minuten in Millisekunden
         const val BREAK_DURATION = 5 * 60 * 1000L // 5 Minuten in Millisekunden
         const val NOTIFICATION_CHANNEL_ID = "pomodoro_channel"
     }
 
-    var timeRemaining: Long = WORK_DURATION
-        private set
+    private val _timeRemaining = MutableLiveData<Long>(WORK_DURATION)
+    val timeRemaining: LiveData<Long> = _timeRemaining
 
-    var isWorkingPhase: Boolean = true
-        private set
+    private val _isRunning = MutableLiveData<Boolean>(false)
+    val isRunning: LiveData<Boolean> = _isRunning
 
-    // Öffentlich zugängliche Variable, um den Status des Timers zu beobachten
-    var isRunning: Boolean = false
-        private set
+    private val _isWorkingPhase = MutableLiveData<Boolean>(true)
+    val isWorkingPhase: LiveData<Boolean> = _isWorkingPhase
 
     private var timerJob: Job? = null
 
@@ -42,30 +42,32 @@ class PomodoroTimerViewModel(private val context: Context) : ViewModel() {
     }
 
     fun startTimer() {
-        if (timerJob?.isActive == true) return // Wenn bereits ein Timer läuft, nichts tun
+        if (timerJob?.isActive == true) return  // Wenn bereits ein Timer läuft, nichts tun
 
-        isRunning = true
+        _isRunning.value = true
         timerJob = viewModelScope.launch {
-            while (timeRemaining > 0) {
+            while (_timeRemaining.value ?: 0 > 0) {
                 delay(1000L)
-                timeRemaining -= 1000L
+                _timeRemaining.value = _timeRemaining.value?.minus(1000L)
                 updateNotification()
             }
-            if (isWorkingPhase) {
-                timeRemaining = BREAK_DURATION
+            // Wenn Arbeitsphase beendet ist, in Pausenphase wechseln
+            if (_isWorkingPhase.value == true) {
+                _timeRemaining.value = BREAK_DURATION
             } else {
-                timeRemaining = WORK_DURATION
+                _timeRemaining.value = WORK_DURATION
             }
-            isWorkingPhase = !isWorkingPhase
+            _isWorkingPhase.value = _isWorkingPhase.value?.not()
             updateNotification()
-            startTimer()  // Startet die nächste Phase
+            startTimer()  // Startet die nächste Phase (Arbeit oder Pause)
         }
     }
 
     fun stopTimer() {
         timerJob?.cancel()
         timerJob = null
-        isRunning = false
+        _isRunning.value = false
+        _timeRemaining.value = if (_isWorkingPhase.value == true) WORK_DURATION else BREAK_DURATION
     }
 
     private fun updateNotification() {
@@ -74,19 +76,14 @@ class PomodoroTimerViewModel(private val context: Context) : ViewModel() {
                 val notification = createNotification()
                 NotificationManagerCompat.from(context).notify(1, notification)
             } catch (e: SecurityException) {
-                // Handle the exception, e.g., log it or show a message to the user
                 e.printStackTrace()
             }
-        } else {
-            // TODO: Handle the case where notifications are not enabled
-            // You might want to inform the user or request the permission
         }
     }
 
     private fun createNotification(): Notification {
         val intent = Intent(context, MainActivity::class.java)
 
-        // Verwende FLAG_IMMUTABLE für den PendingIntent
         val pendingIntent = PendingIntent.getActivity(
             context,
             0,
@@ -94,9 +91,9 @@ class PomodoroTimerViewModel(private val context: Context) : ViewModel() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val statusText = if (isWorkingPhase) "Working: " else "Break: "
-        val timeInMinutes = (timeRemaining / 1000) / 60
-        val timeInSeconds = (timeRemaining / 1000) % 60
+        val statusText = if (_isWorkingPhase.value == true) "Working: " else "Break: "
+        val timeInMinutes = (_timeRemaining.value ?: 0) / 60000
+        val timeInSeconds = (_timeRemaining.value ?: 0) / 1000 % 60
         val timeFormatted = String.format("%02d:%02d", timeInMinutes, timeInSeconds)
 
         return NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
@@ -107,7 +104,6 @@ class PomodoroTimerViewModel(private val context: Context) : ViewModel() {
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
     }
-
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
