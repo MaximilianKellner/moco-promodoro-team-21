@@ -30,7 +30,7 @@ fun ToDoItem(
             .fillMaxWidth()
             .height(64.dp)
             .padding(horizontal = 8.dp)
-            .background(colorResource(id = R.color.colorLightest), shape = RoundedCornerShape(8.dp))
+            .background(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp))
             .clickable {
                 // Optional: irgendwelche Aktionen beim Klicken auf den ganzen Bereich
             }
@@ -48,9 +48,9 @@ fun ToDoItem(
                     onCheckChange(it)
                 },
                 colors = CheckboxDefaults.colors(
-                    checkmarkColor = Color.White,
-                    uncheckedColor = colorResource(id = R.color.white), // Farbe der Checkbox-Rand
-                    checkedColor = colorResource(id = R.color.colorPrimary) // Hintergrundfarbe der Checkbox, wenn aktiviert
+                    checkmarkColor = MaterialTheme.colorScheme.primary,
+                    uncheckedColor = MaterialTheme.colorScheme.primary, // Farbe der Checkbox-Rand
+                    checkedColor = MaterialTheme.colorScheme.onPrimary // Hintergrundfarbe der Checkbox, wenn aktiviert
                 )
             )
             Spacer(modifier = Modifier.width(8.dp))
@@ -69,7 +69,7 @@ fun ToDoItem(
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = "Delete",
-                    tint = colorResource(id = R.color.colorPrimary)
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }

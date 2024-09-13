@@ -1,6 +1,6 @@
 package com.example.promodoro_team_21.frontend
 
-import CustomTabBar
+import CustomTabBar // Importangabe nicht vergessen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,16 +9,13 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.example.promodoro_team_21.R
 import com.example.promodoro_team_21.model.Category
 import com.example.promodoro_team_21.viewModel.TodoViewModel
-
+import androidx.compose.ui.graphics.Color
 @Composable
 fun HalfScreenWithTabBarAndList() {
     var selectedTab by remember { mutableIntStateOf(0) }
@@ -46,7 +43,7 @@ fun HalfScreenWithTabBarAndList() {
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(1f)
-            .background(colorResource(id = R.color.colorLighter))
+            .background(color = MaterialTheme.colorScheme.secondary)
     ) {
         Column(
             modifier = Modifier
@@ -89,9 +86,9 @@ fun HalfScreenWithTabBarAndList() {
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
-            containerColor = colorResource(id = R.color.colorPrimary)
+            containerColor = MaterialTheme.colorScheme.onPrimary
         ) {
-            Icon(Icons.Filled.Add, contentDescription = "Add", tint = Color.White)
+            Icon(Icons.Filled.Add, contentDescription = "Add", tint = MaterialTheme.colorScheme.primary)
         }
 
         // Dialog zum Hinzufügen einer neuen Aufgabe
@@ -103,7 +100,8 @@ fun HalfScreenWithTabBarAndList() {
                     TextField(
                         value = newTaskName,
                         onValueChange = { newTaskName = it },
-                        label = { Text("Task Name") }
+                        label = { Text("Task Name") },
+
                     )
                 },
                 confirmButton = {

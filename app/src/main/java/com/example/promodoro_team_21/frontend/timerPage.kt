@@ -18,6 +18,9 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.promodoro_team_21.viewModel.PomodoroTimerViewModel
+import androidx.compose.material3.MaterialTheme
+
+
 
 @Composable
 fun Timer(
@@ -25,12 +28,14 @@ fun Timer(
     modifier: Modifier = Modifier,
     onSettingsClick: () -> Unit  // Callback für den Settings-Button
 ) {
-    // Verwenden von observeAsState, um LiveData im Composable zu überwachen
     val remainingTime by viewModel.timeRemaining.observeAsState(viewModel.timeRemaining.value ?: 0L)
     val isRunning by viewModel.isRunning.observeAsState(viewModel.isRunning.value ?: false)
     val isWorkingPhase by viewModel.isWorkingPhase.observeAsState(viewModel.isWorkingPhase.value ?: true)
 
-    // Layout für die Timer UI
+    // Extrahiere die Farben aus dem aktuellen Theme
+    val progressColor = MaterialTheme.colorScheme.onPrimary
+    val backgroundColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.3f)
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -44,7 +49,6 @@ fun Timer(
                 .size(200.dp)
                 .padding(16.dp)
         ) {
-            // Zeichnen des Fortschrittsbogens
             Canvas(
                 modifier = Modifier
                     .fillMaxSize()
@@ -55,7 +59,7 @@ fun Timer(
 
                 // Zeichnen des vollen Kreises (Hintergrund)
                 drawArc(
-                    color = Color.Blue.copy(alpha = 0.3f),
+                    color = backgroundColor, //Hintergrund des arcs
                     startAngle = 0f,
                     sweepAngle = 360f,
                     useCenter = false,
@@ -68,7 +72,7 @@ fun Timer(
 
                 // Zeichnen des Fortschrittsbogens
                 drawArc(
-                    color = Color.Blue,
+                    color = progressColor, //Farbe dess Arcs
                     startAngle = -90f,
                     sweepAngle = sweepAngle,
                     useCenter = false,
@@ -80,7 +84,6 @@ fun Timer(
                 )
             }
 
-            // Anzeige der verbleibenden Zeit und kleiner untertitel, work/pause
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -106,7 +109,6 @@ fun Timer(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Button zum Starten oder Pausieren des Timers
             IconButton(
                 onClick = {
                     if (isRunning) {
@@ -116,7 +118,7 @@ fun Timer(
                     }
                 },
                 colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
             ) {
                 Icon(
@@ -125,27 +127,23 @@ fun Timer(
                 )
             }
 
-            // Button für die Einstellungen
             IconButton(
                 onClick = { onSettingsClick() },
                 colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
             ) {
                 Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
             }
 
-            // Button zum Zurücksetzen des Timers
             IconButton(
                 onClick = { viewModel.resetTimer() },
                 colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
             ) {
                 Icon(imageVector = Icons.Default.Refresh, contentDescription = "Reset")
             }
         }
-
     }
 }
-
