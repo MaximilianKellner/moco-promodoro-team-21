@@ -20,12 +20,17 @@ import com.example.promodoro_team_21.frontend.TimerAndTaskList
 import com.example.promodoro_team_21.viewModel.NotificationViewModel
 import com.example.promodoro_team_21.viewModel.PomodoroTimerViewModel
 import com.example.promodoro_team_21.ui.theme.Promodoroteam21Theme
+import com.example.promodoro_team_21.viewModel.TimerRepository
 
 class MainActivity : ComponentActivity() {
     private lateinit var notificationPermissionLauncher: ActivityResultLauncher<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Initialisiere das ViewModel im TimerRepository
+        val notificationViewModel = NotificationViewModel(this)
+        TimerRepository.timerViewModel = PomodoroTimerViewModel(notificationViewModel)
 
         notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
@@ -39,9 +44,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             Promodoroteam21Theme {
-                val context = LocalContext.current
-                val notificationViewModel = remember { NotificationViewModel(context) }
-                val timerViewModel = remember { PomodoroTimerViewModel(notificationViewModel) }
+                val timerViewModel = TimerRepository.timerViewModel
+                val notificationViewModel = timerViewModel.notificationViewModel
 
                 Scaffold { innerPadding ->
                     TimerAndTaskList(
