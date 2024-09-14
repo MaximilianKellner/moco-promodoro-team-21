@@ -26,7 +26,8 @@ import androidx.compose.material3.MaterialTheme
 fun Timer(
     viewModel: PomodoroTimerViewModel,  // ViewModel, um den Timer zu steuern
     modifier: Modifier = Modifier,
-    onSettingsClick: () -> Unit  // Callback für den Settings-Button
+    onSettingsClick: () -> Unit,  // Callback für den Settings-Button
+    onPlayPauseClick: () -> Unit  // Callback für den Play/Pause-Button
 ) {
     val remainingTime by viewModel.timeRemaining.observeAsState(viewModel.timeRemaining.value ?: 0L)
     val isRunning by viewModel.isRunning.observeAsState(viewModel.isRunning.value ?: false)
@@ -111,6 +112,7 @@ fun Timer(
         ) {
             IconButton(
                 onClick = {
+                    onPlayPauseClick()
                     if (isRunning) {
                         viewModel.pauseTimer()
                     } else {

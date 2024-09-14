@@ -16,7 +16,7 @@ fun TimerAndTaskList(
     timerViewModel: PomodoroTimerViewModel,
     notificationViewModel: NotificationViewModel,
     modifier: Modifier = Modifier,
-    onTimerFinish: () -> Unit // Callback for timer completion
+    onPlayPauseClick: () -> Unit = {},
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -27,6 +27,7 @@ fun TimerAndTaskList(
             Timer(
                 viewModel = timerViewModel,
                 onSettingsClick = {},
+                onPlayPauseClick = {},
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(30.dp)
@@ -46,7 +47,7 @@ fun TimerScreenPreview() {
     TimerAndTaskList(
         timerViewModel = timerViewModel,
         notificationViewModel = notificationViewModel,
-        onTimerFinish = {
+        onPlayPauseClick = {
             // Dummy implementation for preview
         }
     )

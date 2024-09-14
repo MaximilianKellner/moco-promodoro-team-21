@@ -12,8 +12,9 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModel
 import com.example.promodoro_team_21.MainActivity
 import com.example.promodoro_team_21.R
+import com.example.promodoro_team_21.broadcastReceiver.NotificationReceiver
 
-class NotificationViewModel(private val context: Context) : ViewModel() {
+class NotificationViewModel(val context: Context) : ViewModel() {
 
     companion object {
         const val NOTIFICATION_CHANNEL_ID = "pomodoro_channel"
@@ -40,17 +41,20 @@ class NotificationViewModel(private val context: Context) : ViewModel() {
     fun updateNotification(statusText: String, timeFormatted: String) {
         if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
             try {
-                val notification = createNotification(statusText, timeFormatted)
+                val notification = createLiveTimerNotification(statusText, timeFormatted)
                 NotificationManagerCompat.from(context).notify(1, notification)
             } catch (e: SecurityException) {
                 e.printStackTrace()
+                //TODO ask user to enable notification permission
+
             }
         }
     }
 
-    private fun createNotification(statusText: String, timeFormatted: String): Notification {
+    private fun createLiveTimerNotification(statusText: String, timeFormatted: String): Notification {
         val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            // Verhindert, dass die Aktivität erneut gestartet wird, wenn sie bereits existiert
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
 
         val pendingIntent = PendingIntent.getActivity(
@@ -60,12 +64,34 @@ class NotificationViewModel(private val context: Context) : ViewModel() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        // Toggle action (Play/Pause)
+        val toggleIntent = Intent(context, NotificationReceiver::class.java).apply {
+            action = "ACTION_TOGGLE_TIMER"
+        }
+        val togglePendingIntent: PendingIntent = PendingIntent.getBroadcast(
+            context, 1, toggleIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        // Reset action
+        val resetIntent = Intent(context, NotificationReceiver::class.java).apply {
+            action = "ACTION_RESET"
+        }
+        val resetPendingIntent: PendingIntent = PendingIntent.getBroadcast(
+            context, 2, resetIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        // TimerRepository, um den Timer-Status zu überprüfen und den Button zu ändern
+        val playPauseText = if (TimerRepository.timerViewModel.isRunning.value == true) "Pause" else "Play"
+
         return NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
             .setContentTitle("Pomodoro Timer")
             .setContentText("$statusText $timeFormatted")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_LOW)
+            .addAction(R.drawable.ic_launcher_foreground, playPauseText, togglePendingIntent)  // Dynamischer Play/Pause-Button
+            .addAction(R.drawable.ic_launcher_foreground, "Reset", resetPendingIntent)  // Reset-Button
+            .setAutoCancel(true)  // Benachrichtigung on klick schliwßen
             .build()
     }
 }

@@ -1,6 +1,8 @@
 package com.example.promodoro_team_21
 
 import android.Manifest
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -13,35 +15,51 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
+import com.example.promodoro_team_21.frontend.PermissionExplanationDialog
 import com.example.promodoro_team_21.frontend.TimerAndTaskList
+import com.example.promodoro_team_21.ui.theme.Promodoroteam21Theme
 import com.example.promodoro_team_21.viewModel.NotificationViewModel
 import com.example.promodoro_team_21.viewModel.PomodoroTimerViewModel
-import com.example.promodoro_team_21.ui.theme.Promodoroteam21Theme
+import com.example.promodoro_team_21.viewModel.TimerRepository
+import android.net.Uri
+import android.provider.Settings
 
 class MainActivity : ComponentActivity() {
     private lateinit var notificationPermissionLauncher: ActivityResultLauncher<String>
+    private val showDialog = mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Initialisiere das ViewModel im TimerRepository
+        val notificationViewModel = NotificationViewModel(this)
+        TimerRepository.timerViewModel = PomodoroTimerViewModel(notificationViewModel)
+
         notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
                 // Permission was granted
+                TimerRepository.timerViewModel.startTimerInternal()
             } else {
                 // Permission denied
-                // Display a notification or dialog that the permission is needed
+                showDialog.value = true
             }
         }
-        checkAndRequestNotificationPermission()
 
         setContent {
             Promodoroteam21Theme {
-                val context = LocalContext.current
-                val notificationViewModel = remember { NotificationViewModel(context) }
-                val timerViewModel = remember { PomodoroTimerViewModel(notificationViewModel) }
+                if (showDialog.value) {
+                    PermissionExplanationDialog(
+                        onDismiss = { showDialog.value = false },
+                        onAppInfoClick = {
+                            openAppInfo(this)
+                            showDialog.value = false
+                        }
+                    )
+                }
+
+                val timerViewModel = TimerRepository.timerViewModel
+                val notificationViewModel = timerViewModel.notificationViewModel
 
                 Scaffold { innerPadding ->
                     TimerAndTaskList(
@@ -50,39 +68,26 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(innerPadding),
-                        onTimerFinish = {}
                     )
                 }
             }
         }
     }
 
-    private fun checkAndRequestNotificationPermission() {
+    fun checkAndRequestNotificationPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
+        } else {
+            TimerRepository.timerViewModel.startTimerInternal()
         }
     }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun TimerAndTaskListPreview() {
-    val context = LocalContext.current
-    val notificationViewModel = NotificationViewModel(context)
-    val timerViewModel = PomodoroTimerViewModel(notificationViewModel)
-
-    Promodoroteam21Theme {
-        Scaffold {
-            TimerAndTaskList(
-                timerViewModel = timerViewModel,
-                notificationViewModel = notificationViewModel,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it),
-                onTimerFinish = {}
-            )
+    fun openAppInfo(context: Context) {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", context.packageName, null)
         }
+        context.startActivity(intent)
     }
 }

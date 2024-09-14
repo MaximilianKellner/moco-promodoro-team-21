@@ -29,10 +29,7 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".timer.TimerService"
-            android:foregroundServiceType="specialUse"
-            android:exported="false"/>
+        <receiver android:name="com.example.promodoro_team_21.broadcastReceiver.NotificationReceiver" android:exported="false"/>
 
     </application>
 
