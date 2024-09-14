@@ -23,7 +23,7 @@ fun CustomTabBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Black)
+            .background(color = MaterialTheme.colorScheme.background)
             .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
@@ -37,7 +37,7 @@ fun CustomTabBar(
             ) {
                 Text(
                     text = title,
-                    color = if (index == selectedTabIndex) Color.White else Color.Gray,
+                    color = if (index == selectedTabIndex) MaterialTheme.colorScheme.primary else Color.Gray,
                     fontSize = 18.sp,
                     fontWeight = if (index == selectedTabIndex) FontWeight.Bold else FontWeight.Normal,
                 )
@@ -47,7 +47,7 @@ fun CustomTabBar(
                         modifier = Modifier
                             .height(2.dp)
                             .width(20.dp)
-                            .background(colorResource(id = R.color.colorPrimary), shape = RoundedCornerShape(1.dp))
+                            .background(color = MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(1.dp))
                     )
                 }
             }

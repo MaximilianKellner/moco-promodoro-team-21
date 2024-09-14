@@ -6,11 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFFFFFFFF),
-    secondary = Color(0xFF22242E),
-    background = Color(0xFF000000),
-    surface = Color(0xFF000000),
-    onPrimary = Color.Black,
+    primary = Color(0xFFFFFFFF), //Schrift weiß
+    secondary = Color(0x991B1D2E), //buttons (pause,play, settings)
+    background = Color(0xD700050F), //Hintergrund Timer und Leiste
+    surface = Color(0xB4363A55),//TASKS, buttons (pause,play, settings)
+    onPrimary = Color(0xFF264BCD), //Bogen, Secondary Buttons
     onSecondary = Color.Black,
     onBackground = Color.White,
     onSurface = Color.White
