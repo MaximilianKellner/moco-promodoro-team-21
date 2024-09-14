@@ -86,5 +86,6 @@ fun SettingsScreen(onBack: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewSettingsScreen() {
+    // Leere Implementierung für das Preview
     SettingsScreen(onBack = {})
 }
