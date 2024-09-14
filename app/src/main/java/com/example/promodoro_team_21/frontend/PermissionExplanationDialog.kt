@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import com.example.promodoro_team_21.R
 
 @Composable
-fun ErklaerungsDialog(onDismiss: () -> Unit, ablehnungsCount: Int,) {
+fun PermissionExplanationDialog(onDismiss: () -> Unit, ablehnungsCount: Int,) {
     val context = LocalContext.current
 
     AlertDialog(

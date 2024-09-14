@@ -51,10 +51,7 @@ class MainActivity : ComponentActivity() {
                 if (showDialog.value) {
                     PermissionExplanationDialog(
                         onDismiss = { showDialog.value = false },
-                        onAppInfoClick = {
-                            openAppInfo(this)
-                            showDialog.value = false
-                        }
+                        ablehnungsCount = 0
                     )
                 }
 
