@@ -85,6 +85,6 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
         val timeInSeconds = (_timeRemaining.value ?: 0) / 1000 % 60
         val timeFormatted = String.format("%02d:%02d", timeInMinutes, timeInSeconds)
 
-        notificationViewModel.updateNotification(statusText, timeFormatted)
+        notificationViewModel.updateLiveNotification(statusText, timeFormatted)
     }
 }

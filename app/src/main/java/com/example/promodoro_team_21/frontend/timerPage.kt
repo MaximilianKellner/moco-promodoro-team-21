@@ -19,7 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.promodoro_team_21.viewModel.PomodoroTimerViewModel
 import androidx.compose.material3.MaterialTheme
-
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.promodoro_team_21.viewModel.NotificationViewModel
 
 
 @Composable
@@ -148,4 +150,12 @@ fun Timer(
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun TimerPreview() {
+    val context = LocalContext.current
+    val viewModel = remember { PomodoroTimerViewModel(_notificationViewModel = NotificationViewModel(context)) }
+    Timer(viewModel = viewModel, onSettingsClick = {}, onPlayPauseClick = {})
 }

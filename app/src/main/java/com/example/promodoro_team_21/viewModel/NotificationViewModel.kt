@@ -21,10 +21,10 @@ class NotificationViewModel(val context: Context) : ViewModel() {
     }
 
     init {
-        createNotificationChannel()
+        createNotificationChannelLiveTimer()
     }
 
-    private fun createNotificationChannel() {
+    private fun createNotificationChannelLiveTimer() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Pomodoro Timer"
             val descriptionText = "Pomodoro timer notifications"
@@ -38,7 +38,7 @@ class NotificationViewModel(val context: Context) : ViewModel() {
         }
     }
 
-    fun updateNotification(statusText: String, timeFormatted: String) {
+    fun updateLiveNotification(statusText: String, timeFormatted: String) {
         if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
             try {
                 val notification = createLiveTimerNotification(statusText, timeFormatted)
