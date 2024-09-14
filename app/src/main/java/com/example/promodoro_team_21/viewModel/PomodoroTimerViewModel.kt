@@ -1,9 +1,7 @@
 package com.example.promodoro_team_21.viewModel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.example.promodoro_team_21.MainActivity
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -31,6 +29,11 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
     fun startTimer() {
         if (timerJob?.isActive == true) return  // Wenn bereits ein Timer läuft, nichts tun
 
+        // Überprüfe und fordere die Benachrichtigungsberechtigung an
+        (notificationViewModel.context as MainActivity).checkAndRequestNotificationPermission()
+    }
+
+    fun startTimerInternal() {
         _isRunning.value = true
         updateNotification()  // Benachrichtigung aktualisieren, um "Pause"-Schaltfläche anzuzeigen
         timerJob = viewModelScope.launch {

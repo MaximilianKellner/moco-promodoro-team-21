@@ -23,7 +23,8 @@ import com.example.promodoro_team_21.viewModel.PomodoroTimerViewModel
 fun Timer(
     viewModel: PomodoroTimerViewModel,  // ViewModel, um den Timer zu steuern
     modifier: Modifier = Modifier,
-    onSettingsClick: () -> Unit  // Callback für den Settings-Button
+    onSettingsClick: () -> Unit,  // Callback für den Settings-Button
+    onPlayPauseClick: () -> Unit  // Callback für den Play/Pause-Button
 ) {
     // Verwenden von observeAsState, um LiveData im Composable zu überwachen
     val remainingTime by viewModel.timeRemaining.observeAsState(viewModel.timeRemaining.value ?: 0L)
@@ -109,6 +110,7 @@ fun Timer(
             // Button zum Starten oder Pausieren des Timers
             IconButton(
                 onClick = {
+                    onPlayPauseClick()
                     if (isRunning) {
                         viewModel.pauseTimer()
                     } else {
@@ -148,4 +150,3 @@ fun Timer(
 
     }
 }
-
