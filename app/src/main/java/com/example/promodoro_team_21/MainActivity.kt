@@ -28,6 +28,7 @@ import android.provider.Settings
 class MainActivity : ComponentActivity() {
     private lateinit var notificationPermissionLauncher: ActivityResultLauncher<String>
     private val showDialog = mutableStateOf(false)
+    private var ablehnungsCount = 0 // Zähler für Ablehnungen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,9 +40,11 @@ class MainActivity : ComponentActivity() {
         notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
                 // Permission was granted
+                ablehnungsCount = 0
                 TimerRepository.timerViewModel.startTimerInternal()
             } else {
                 // Permission denied
+                ablehnungsCount++
                 showDialog.value = true
             }
         }
@@ -50,8 +53,8 @@ class MainActivity : ComponentActivity() {
             Promodoroteam21Theme {
                 if (showDialog.value) {
                     PermissionExplanationDialog(
-                        onDismiss = { showDialog.value = false },
-                        ablehnungsCount = 0
+                        onDismiss = { showDialog.value = false},
+                        ablehnungsCount = ablehnungsCount
                     )
                 }
 
@@ -79,12 +82,5 @@ class MainActivity : ComponentActivity() {
         } else {
             TimerRepository.timerViewModel.startTimerInternal()
         }
-    }
-
-    fun openAppInfo(context: Context) {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-            data = Uri.fromParts("package", context.packageName, null)
-        }
-        context.startActivity(intent)
     }
 }
