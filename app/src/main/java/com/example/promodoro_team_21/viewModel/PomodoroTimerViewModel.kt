@@ -74,8 +74,7 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
             _isRunning.value = false  // Timer stoppen, wenn die Arbeitsphase endet
         }
         //Timer phasen wechsel notification
-        //TODO: Benachrichtigung, die den Nutzer darüber informiert, dass die Phase gewechselt wurde
-
+        sendSwitchPhaseNotification()
         updateNotification()
     }
 
@@ -86,5 +85,10 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
         val timeFormatted = String.format("%02d:%02d", timeInMinutes, timeInSeconds)
 
         notificationViewModel.updateLiveNotification(statusText, timeFormatted)
+    }
+
+    private fun sendSwitchPhaseNotification() {
+        val statusText = if (_isWorkingPhase.value == true) "Arbeitsphase" else "Pausephase"
+        notificationViewModel.sendSwitchPhaseNotification(statusText)
     }
 }
