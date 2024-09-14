@@ -44,7 +44,7 @@ class NotificationViewModel(val context: Context) : ViewModel() {
     //function to create a notification for the switch phase
     private fun createNotificationChannelSwitchPhase() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Pomodoro Timer Switch Phase"
+            val name = "Switch Phase Notification"
             val descriptionText = "Pomodoro timer notifications when switching phase"
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID_SWITCH_PHASE, name, importance).apply {
