@@ -19,7 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.promodoro_team_21.viewModel.PomodoroTimerViewModel
 import androidx.compose.material3.MaterialTheme
-
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.promodoro_team_21.viewModel.NotificationViewModel
 
 
 @Composable
@@ -31,7 +33,9 @@ fun Timer(
 ) {
     val remainingTime by viewModel.timeRemaining.observeAsState(viewModel.timeRemaining.value ?: 0L)
     val isRunning by viewModel.isRunning.observeAsState(viewModel.isRunning.value ?: false)
-    val isWorkingPhase by viewModel.isWorkingPhase.observeAsState(viewModel.isWorkingPhase.value ?: true)
+    val isWorkingPhase by viewModel.isWorkingPhase.observeAsState(
+        viewModel.isWorkingPhase.value ?: true
+    )
 
     // Extrahiere die Farben aus dem aktuellen Theme
     val progressColor = MaterialTheme.colorScheme.onPrimary
@@ -54,7 +58,8 @@ fun Timer(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                val totalDuration = if (isWorkingPhase) PomodoroTimerViewModel.WORK_DURATION else PomodoroTimerViewModel.BREAK_DURATION
+                val totalDuration =
+                    if (isWorkingPhase) PomodoroTimerViewModel.WORK_DURATION else PomodoroTimerViewModel.BREAK_DURATION
                 val sweepAngle = 360f * (remainingTime / totalDuration.toFloat())
                 val strokeWidth = 30f
 
@@ -148,4 +153,12 @@ fun Timer(
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun TimerPreview() {
+    val context = LocalContext.current
+    val viewModel = remember { PomodoroTimerViewModel(_notificationViewModel = NotificationViewModel(context)) }
+    Timer(viewModel = viewModel, onSettingsClick = {}, onPlayPauseClick = {})
 }
