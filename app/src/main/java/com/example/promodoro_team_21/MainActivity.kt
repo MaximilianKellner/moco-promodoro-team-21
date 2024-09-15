@@ -89,28 +89,52 @@ class MainActivity : ComponentActivity() {
                         SettingsScreen(onBack = {
                             navController.popBackStack() // Zurück zum vorherigen Bildschirm
                         },
-                        onSettingsChanged = { newSettings ->
-                            // Hier aktualisieren wir die Einstellungen und das ViewModel
-                            SettingsManager.updateSettings(newSettings)
-                            pomodoroTimerViewModel.updateTimerDurations()
-                        })
+                            onSettingsChanged = { newSettings ->
+                                // Hier aktualisieren wir die Einstellungen und das ViewModel
+                                SettingsManager.updateSettings(newSettings)
+                                pomodoroTimerViewModel.updateTimerDurations()
+                            })
                     }
                 }
             }
         }
     }
 
-        fun checkAndRequestNotificationPermission() {
-            if (ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                }
-            } else {
-                TimerRepository.timerViewModel.startTimerInternal()
+    /*
+    override fun onPause() {
+        super.onPause()
+        TimerRepository.timerViewModel.saveTimerState()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        TimerRepository.timerViewModel.restoreTimerState()
+        //checkAndRequestNotificationPermission()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        TimerRepository.timerViewModel.saveTimerState()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        TimerRepository.timerViewModel.restoreTimerState()
+    }
+
+     */
+
+    fun checkAndRequestNotificationPermission() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
+        } else {
+            TimerRepository.timerViewModel.startTimerInternal()
         }
     }
+}

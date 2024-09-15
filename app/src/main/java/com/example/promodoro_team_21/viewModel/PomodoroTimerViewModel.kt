@@ -1,5 +1,7 @@
 package com.example.promodoro_team_21.viewModel
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.*
 import com.example.promodoro_team_21.MainActivity
 import com.example.promodoro_team_21.frontend.SettingsManager
@@ -12,8 +14,11 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
         get() = _notificationViewModel
 
     companion object {
-        var WORK_DURATION = (SettingsManager.timerSettings.workDuration * 60 * 1000).toLong() // 25 Minuten in Millisekunden für Testzwecke
-        var BREAK_DURATION = (SettingsManager.timerSettings.workDuration * 60 * 1000).toLong() // 5 Minuten in Millisekunden
+        var WORK_DURATION = (SettingsManager.timerSettings.workDuration * 60 * 1000).toLong()
+        var BREAK_DURATION = (SettingsManager.timerSettings.breakDuration * 60 * 1000).toLong()
+        private const val PREFS_NAME = "PomodoroTimerPrefs"
+        private const val KEY_TIME_REMAINING = "timeRemaining"
+        private const val KEY_IS_WORKING_PHASE = "isWorkingPhase"
     }
 
     private val _timeRemaining = MutableLiveData<Long>(WORK_DURATION)
@@ -26,6 +31,10 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
     val isWorkingPhase: LiveData<Boolean> = _isWorkingPhase
 
     private var timerJob: Job? = null
+
+    init {
+        loadTimerState()
+    }
 
     fun startTimer() {
         if (timerJob?.isActive == true) return  // Wenn bereits ein Timer läuft, nichts tun.
@@ -86,6 +95,7 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
         val timeFormatted = String.format("%02d:%02d", timeInMinutes, timeInSeconds)
 
         notificationViewModel.updateLiveNotification(statusText, timeFormatted)
+        saveTimerState()
     }
 
     private fun sendSwitchPhaseNotification() {
@@ -97,5 +107,24 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
         WORK_DURATION = (SettingsManager.timerSettings.workDuration * 60 * 1000).toLong()
         BREAK_DURATION = (SettingsManager.timerSettings.breakDuration * 60 * 1000).toLong()
         resetTimer()
+    }
+
+    fun saveTimerState() {
+        val sharedPreferences = notificationViewModel.context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putLong(KEY_TIME_REMAINING, _timeRemaining.value ?: WORK_DURATION)
+            putBoolean(KEY_IS_WORKING_PHASE, _isWorkingPhase.value ?: true)
+            apply()
+        }
+    }
+
+    fun restoreTimerState() {
+        loadTimerState()
+    }
+
+    private fun loadTimerState() {
+        val sharedPreferences = notificationViewModel.context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        _timeRemaining.value = sharedPreferences.getLong(KEY_TIME_REMAINING, WORK_DURATION)
+        _isWorkingPhase.value = sharedPreferences.getBoolean(KEY_IS_WORKING_PHASE, true)
     }
 }

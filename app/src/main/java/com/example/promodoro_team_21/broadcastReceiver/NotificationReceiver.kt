@@ -18,9 +18,11 @@ class NotificationReceiver : BroadcastReceiver() {
                 } else {
                     viewModel.startTimer()  // Starte den Timer, wenn er pausiert ist
                 }
+                viewModel.saveTimerState()  // Speichere den Timer-Status
             }
             "ACTION_RESET" -> {
                 viewModel.resetTimer()  // Setze den Timer zurück
+                viewModel.saveTimerState()  // Speichere den Timer-Status
             }
         }
     }
