@@ -11,7 +11,7 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
         get() = _notificationViewModel
 
     companion object {
-        var WORK_DURATION = (SettingsManager.timerSettings.workDuration * 10 * 1000).toLong() // 25 Minuten in Millisekunden für Testzwecke
+        var WORK_DURATION = (SettingsManager.timerSettings.workDuration * 60 * 1000).toLong() // 25 Minuten in Millisekunden für Testzwecke
         var BREAK_DURATION = (SettingsManager.timerSettings.workDuration * 60 * 1000).toLong() // 5 Minuten in Millisekunden
     }
 
@@ -27,7 +27,7 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
     private var timerJob: Job? = null
 
     fun startTimer() {
-        if (timerJob?.isActive == true) return  // Wenn bereits ein Timer läuft, nichts tun
+        if (timerJob?.isActive == true) return  // Wenn bereits ein Timer läuft, nichts tun.
 
         // Überprüfe und fordere die Benachrichtigungsberechtigung an
         (notificationViewModel.context as MainActivity).checkAndRequestNotificationPermission()
@@ -37,7 +37,7 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
         _isRunning.value = true
         updateNotification()  // Benachrichtigung aktualisieren, um "Pause"-Schaltfläche anzuzeigen
         timerJob = viewModelScope.launch {
-            while (_timeRemaining.value ?: 0 > 0) {
+            while ((_timeRemaining.value ?: 0) > 0) {
                 delay(1000L)
                 _timeRemaining.value = _timeRemaining.value?.minus(1000L)
                 updateNotification()
@@ -91,7 +91,6 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
     fun updateTimerDurations() {
         WORK_DURATION = (SettingsManager.timerSettings.workDuration * 60 * 1000).toLong()
         BREAK_DURATION = (SettingsManager.timerSettings.breakDuration * 60 * 1000).toLong()
-        resetTimer()
         resetTimer()
     }
 }
