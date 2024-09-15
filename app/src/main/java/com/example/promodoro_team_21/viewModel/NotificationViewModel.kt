@@ -133,7 +133,7 @@ class NotificationViewModel(val context: Context) : ViewModel() {
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-            .setAutoCancel(true)  // Benachrichtigung on klick schliwßen
+            .setAutoCancel(false)//benachrichtigung bleibt on klick geöffnet
             .build()
     }
 
