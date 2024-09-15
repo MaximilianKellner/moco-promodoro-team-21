@@ -105,7 +105,16 @@ class MainActivity : ComponentActivity() {
         TimerRepository.timerViewModel.saveTimerState()
     }
 
+    override fun onResume() {
+        super.onResume()
+        TimerRepository.timerViewModel.restoreTimerState()
+        checkAndRequestNotificationPermission()
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        TimerRepository.timerViewModel.pauseTimer()
+    }
 
     fun checkAndRequestNotificationPermission() {
         if (ActivityCompat.checkSelfPermission(

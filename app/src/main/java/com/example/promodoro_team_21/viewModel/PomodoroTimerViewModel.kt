@@ -61,7 +61,6 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
         timerJob?.cancel()  // Pausiert den Timer, ohne die verbleibende Zeit zurückzusetzen
         _isRunning.value = false
         updateNotification()  // Benachrichtigung aktualisieren, um "Play"-Schaltfläche anzuzeigen
-        saveTimerState()
     }
 
     fun resetTimer() {
@@ -70,7 +69,6 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
         _timeRemaining.value = WORK_DURATION  // Setze den Timer auf WORK_DURATION zurück
         _isWorkingPhase.value = true // Setze die Arbeitsphase zurück
         updateNotification()
-        saveTimerState()
     }
 
     private fun switchPhase() {
@@ -88,7 +86,6 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
         //Timer phasen wechsel notification
         sendSwitchPhaseNotification()
         updateNotification()
-        saveTimerState()
     }
 
     private fun updateNotification() {
@@ -98,6 +95,7 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
         val timeFormatted = String.format("%02d:%02d", timeInMinutes, timeInSeconds)
 
         notificationViewModel.updateLiveNotification(statusText, timeFormatted)
+        saveTimerState()
     }
 
     private fun sendSwitchPhaseNotification() {
@@ -118,6 +116,10 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
             putBoolean(KEY_IS_WORKING_PHASE, _isWorkingPhase.value ?: true)
             apply()
         }
+    }
+
+    fun restoreTimerState() {
+        loadTimerState()
     }
 
     private fun loadTimerState() {
