@@ -100,6 +100,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /*
     override fun onPause() {
         super.onPause()
         TimerRepository.timerViewModel.saveTimerState()
@@ -108,13 +109,20 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         TimerRepository.timerViewModel.restoreTimerState()
-        checkAndRequestNotificationPermission()
+        //checkAndRequestNotificationPermission()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        TimerRepository.timerViewModel.pauseTimer()
+        TimerRepository.timerViewModel.saveTimerState()
     }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        TimerRepository.timerViewModel.restoreTimerState()
+    }
+
+     */
 
     fun checkAndRequestNotificationPermission() {
         if (ActivityCompat.checkSelfPermission(

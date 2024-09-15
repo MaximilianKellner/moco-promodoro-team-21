@@ -71,7 +71,6 @@ class NotificationViewModel(val context: Context) : ViewModel() {
     //notification which displays the current time on the timer and is able to pause and reset the timer
     private fun createLiveTimerNotification(statusText: String, timeFormatted: String): Notification {
         val intent = Intent(context, MainActivity::class.java).apply {
-            // Verhindert, dass die Aktivität erneut gestartet wird, wenn sie bereits existiert
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
 
@@ -82,7 +81,6 @@ class NotificationViewModel(val context: Context) : ViewModel() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        // Toggle action (Play/Pause)
         val toggleIntent = Intent(context, NotificationReceiver::class.java).apply {
             action = "ACTION_TOGGLE_TIMER"
         }
@@ -90,7 +88,6 @@ class NotificationViewModel(val context: Context) : ViewModel() {
             context, 1, toggleIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        // Reset action
         val resetIntent = Intent(context, NotificationReceiver::class.java).apply {
             action = "ACTION_RESET"
         }
@@ -98,7 +95,6 @@ class NotificationViewModel(val context: Context) : ViewModel() {
             context, 2, resetIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        // TimerRepository, um den Timer-Status zu überprüfen und den Button zu ändern
         val playPauseText = if (TimerRepository.timerViewModel.isRunning.value == true) "Pause" else "Play"
 
         return NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
@@ -109,7 +105,6 @@ class NotificationViewModel(val context: Context) : ViewModel() {
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .addAction(R.drawable.ic_launcher_foreground, playPauseText, togglePendingIntent)  // Dynamischer Play/Pause-Button
             .addAction(R.drawable.ic_launcher_foreground, "Reset", resetPendingIntent)  // Reset-Button
-            .setAutoCancel(true)  // Benachrichtigung on klick schliwßen
             .build()
     }
 
@@ -133,7 +128,6 @@ class NotificationViewModel(val context: Context) : ViewModel() {
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-            .setAutoCancel(false)//benachrichtigung bleibt on klick geöffnet
             .build()
     }
 
