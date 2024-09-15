@@ -36,6 +36,7 @@ class MainActivity : ComponentActivity() {
 
         // Initialisiere das ViewModel im TimerRepository
         val notificationViewModel = NotificationViewModel(this)
+        var pomodoroTimerViewModel = PomodoroTimerViewModel(notificationViewModel)
         TimerRepository.timerViewModel = PomodoroTimerViewModel(notificationViewModel)
 
         notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
@@ -82,6 +83,11 @@ class MainActivity : ComponentActivity() {
                     composable("settings") {
                         SettingsScreen(onBack = {
                             navController.popBackStack() // Zurück zum vorherigen Bildschirm
+                        },
+                        onSettingsChanged = { newSettings ->
+                            // Hier aktualisieren wir die Einstellungen und das ViewModel
+                            SettingsManager.updateSettings(newSettings)
+                            pomodoroTimerViewModel.updateTimerDurations()
                         })
                     }
                 }

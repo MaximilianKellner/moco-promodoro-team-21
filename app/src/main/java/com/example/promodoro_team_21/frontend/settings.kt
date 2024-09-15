@@ -41,7 +41,9 @@ object SettingsManager {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(onBack: () -> Unit) {
+fun SettingsScreen(onBack: () -> Unit,
+                   onSettingsChanged: (TimerSettings) -> Unit
+) {
     val settings = remember { mutableStateOf(SettingsManager.timerSettings) }
 Box(
     modifier = Modifier
@@ -98,6 +100,8 @@ Box(
 
             onClick = {
                 // Aktion ausführen
+                SettingsManager.updateSettings(settings.value)
+                onSettingsChanged(settings.value)
                 onBack()
             },
             colors = ButtonDefaults.buttonColors(
@@ -115,10 +119,14 @@ Box(
 }
 
 
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun PreviewSettingsScreen() {
     // Leere Implementierung für das Preview
-    SettingsScreen(onBack = {})
+    SettingsScreen(onBack = {},
+        onSettingsChanged = SettingsManager(
+            timerSettings = TimerSettings()
+        ))
 }
+*/
