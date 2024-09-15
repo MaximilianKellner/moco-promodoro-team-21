@@ -116,13 +116,13 @@ class MainActivity : ComponentActivity() {
         super.onDestroy()
         TimerRepository.timerViewModel.saveTimerState()
     }
-
+    */
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         TimerRepository.timerViewModel.restoreTimerState()
     }
 
-     */
+
 
     fun checkAndRequestNotificationPermission() {
         if (ActivityCompat.checkSelfPermission(

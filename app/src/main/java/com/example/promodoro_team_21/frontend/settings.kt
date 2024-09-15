@@ -71,9 +71,10 @@ Box(
                 .fillMaxWidth(),
             value = settings.value.workDuration.toString(),
             onValueChange = { newValue ->
-                //Minimum Work sind 5 Minuten
-                val newDuration = newValue.toIntOrNull() ?: 5
-                settings.value = settings.value.copy(workDuration = newDuration)
+                //Minimum Work ist eine Minute
+                val newDuration = newValue.toIntOrNull() ?: 1
+                val clampedDuration = newDuration.coerceIn(1, 60)
+                settings.value = settings.value.copy(workDuration = clampedDuration)
             },
             label = { Text("Arbeitszeit in Minuten") },
         )
@@ -85,11 +86,11 @@ Box(
             onValueChange = { newValue ->
                 //Minimum Break ist 1 Minute
                 val newDuration = newValue.toIntOrNull() ?: 1
-                settings.value = settings.value.copy(breakDuration = newDuration)
+                val clampedDuration = newDuration.coerceIn(1,20)
+                settings.value = settings.value.copy(breakDuration = clampedDuration)
             },
             label = { Text("Pausen in Miunten") }
         )
-
 
         Spacer(modifier = Modifier.height(16.dp))
 

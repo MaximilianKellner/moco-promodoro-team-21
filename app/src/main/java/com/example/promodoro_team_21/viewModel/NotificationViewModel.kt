@@ -63,7 +63,6 @@ class NotificationViewModel(val context: Context) : ViewModel() {
                 NotificationManagerCompat.from(context).notify(1, notification)
             } catch (e: SecurityException) {
                 e.printStackTrace()
-                //TODO ask user to enable notification permission
             }
         }
     }
@@ -71,7 +70,7 @@ class NotificationViewModel(val context: Context) : ViewModel() {
     //notification which displays the current time on the timer and is able to pause and reset the timer
     private fun createLiveTimerNotification(statusText: String, timeFormatted: String): Notification {
         val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP // or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
 
         val pendingIntent = PendingIntent.getActivity(
@@ -96,6 +95,7 @@ class NotificationViewModel(val context: Context) : ViewModel() {
         )
 
         val playPauseText = if (TimerRepository.timerViewModel.isRunning.value == true) "Pause" else "Play"
+
 
         return NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
             .setContentTitle("Pomodoro Timer")
