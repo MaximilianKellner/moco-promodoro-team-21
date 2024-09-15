@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
         // Initialisiere das ViewModel im TimerRepository
         val notificationViewModel = NotificationViewModel(this)
         var pomodoroTimerViewModel = PomodoroTimerViewModel(notificationViewModel)
-        TimerRepository.timerViewModel = PomodoroTimerViewModel(notificationViewModel)
+        TimerRepository.timerViewModel = pomodoroTimerViewModel
 
         notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {

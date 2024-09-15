@@ -28,9 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 
 data class TimerSettings(
     val workDuration: Int = 25,
-    val breakDuration: Int = 5,
-    val longBreakDuration: Int = 15,
-    val cyclesBeforeLongBreak: Int = 4
+    val breakDuration: Int = 5
 )
 
 object SettingsManager {
@@ -66,7 +64,6 @@ Box(
             modifier = Modifier
                 .fillMaxWidth() // Der Text nimmt die volle Breite ein und wird zentriert
                 .padding(10.dp)
-
         )
 
         OutlinedTextField(
@@ -74,14 +71,11 @@ Box(
                 .fillMaxWidth(),
             value = settings.value.workDuration.toString(),
             onValueChange = { newValue ->
-                val newDuration = newValue.toIntOrNull() ?: settings.value.workDuration
+                //Minimum Work sind 5 Minuten
+                val newDuration = newValue.toIntOrNull() ?: 5
                 settings.value = settings.value.copy(workDuration = newDuration)
             },
             label = { Text("Arbeitszeit in Minuten") },
-            /*colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary, // Farbe beim Fokus
-                unfocusedBorderColor = MaterialTheme.colorScheme.secondary, // Farbe ohne Fokus
-            )*/
         )
 
         OutlinedTextField(
@@ -89,7 +83,8 @@ Box(
                 .fillMaxWidth(),
             value = settings.value.breakDuration.toString(),
             onValueChange = { newValue ->
-                val newDuration = newValue.toIntOrNull() ?: settings.value.breakDuration
+                //Minimum Break ist 1 Minute
+                val newDuration = newValue.toIntOrNull() ?: 1
                 settings.value = settings.value.copy(breakDuration = newDuration)
             },
             label = { Text("Pausen in Miunten") }
@@ -99,7 +94,6 @@ Box(
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-
             onClick = {
                 // Aktion ausführen
                 SettingsManager.updateSettings(settings.value)
