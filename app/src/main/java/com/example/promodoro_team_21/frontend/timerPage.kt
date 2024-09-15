@@ -33,7 +33,9 @@ fun Timer(
 ) {
     val remainingTime by viewModel.timeRemaining.observeAsState(viewModel.timeRemaining.value ?: 0L)
     val isRunning by viewModel.isRunning.observeAsState(viewModel.isRunning.value ?: false)
-    val isWorkingPhase by viewModel.isWorkingPhase.observeAsState(viewModel.isWorkingPhase.value ?: true)
+    val isWorkingPhase by viewModel.isWorkingPhase.observeAsState(
+        viewModel.isWorkingPhase.value ?: true
+    )
 
     // Extrahiere die Farben aus dem aktuellen Theme
     val progressColor = MaterialTheme.colorScheme.onPrimary
@@ -56,7 +58,8 @@ fun Timer(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                val totalDuration = if (isWorkingPhase) PomodoroTimerViewModel.WORK_DURATION else PomodoroTimerViewModel.BREAK_DURATION
+                val totalDuration =
+                    if (isWorkingPhase) PomodoroTimerViewModel.WORK_DURATION else PomodoroTimerViewModel.BREAK_DURATION
                 val sweepAngle = 360f * (remainingTime / totalDuration.toFloat())
                 val strokeWidth = 30f
 

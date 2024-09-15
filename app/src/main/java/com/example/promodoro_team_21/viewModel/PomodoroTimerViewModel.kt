@@ -11,8 +11,8 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
         get() = _notificationViewModel
 
     companion object {
-        const val WORK_DURATION = 1 * 10 * 1000L // 25 Minuten in Millisekunden für Testzwecke
-        const val BREAK_DURATION = 5 * 60 * 1000L // 5 Minuten in Millisekunden
+        var WORK_DURATION = (SettingsManager.timerSettings.workDuration * 10 * 1000).toLong() // 25 Minuten in Millisekunden für Testzwecke
+        var BREAK_DURATION = (SettingsManager.timerSettings.workDuration * 60 * 1000).toLong() // 5 Minuten in Millisekunden
     }
 
     private val _timeRemaining = MutableLiveData<Long>(WORK_DURATION)
@@ -90,5 +90,12 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
     private fun sendSwitchPhaseNotification() {
         val statusText = if (_isWorkingPhase.value == true) "Arbeitsphase" else "Pausephase"
         notificationViewModel.sendSwitchPhaseNotification(statusText)
+    }
+
+    fun updateTimerDurations() {
+        WORK_DURATION = (SettingsManager.timerSettings.workDuration * 60 * 1000).toLong()
+        BREAK_DURATION = (SettingsManager.timerSettings.breakDuration * 60 * 1000).toLong()
+        resetTimer()
+        resetTimer()
     }
 }
