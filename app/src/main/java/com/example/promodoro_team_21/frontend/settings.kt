@@ -1,3 +1,5 @@
+package com.example.promodoro_team_21.frontend
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.runtime.Composable
