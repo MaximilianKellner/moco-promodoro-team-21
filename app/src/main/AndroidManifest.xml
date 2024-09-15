@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 
     <application
         android:allowBackup="true"
@@ -17,6 +17,7 @@
         android:theme="@style/Theme.Promodoroteam21"
         android:name = ".MainApplication"
         tools:targetApi="31">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -24,12 +25,21 @@
             android:theme="@style/Theme.Promodoroteam21">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <receiver android:name="com.example.promodoro_team_21.broadcastReceiver.NotificationReceiver" android:exported="false"/>
+        <!-- Receiver für Notification-Aktionen -->
+        <receiver
+            android:name="com.example.promodoro_team_21.broadcastReceiver.NotificationReceiver"
+            android:exported="false" />
+
+        <!-- TimerForegroundService-Eintrag -->
+        <service
+            android:name="com.example.promodoro_team_21.services.TimerForegroundService"
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="false">
+        </service>
 
     </application>
 

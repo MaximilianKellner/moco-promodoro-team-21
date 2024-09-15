@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.promodoro_team_21.viewModel.PomodoroTimerViewModel
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.promodoro_team_21.viewModel.NotificationViewModel
@@ -47,6 +48,7 @@ fun Timer(
         modifier = modifier
             .fillMaxWidth()
             .padding(30.dp)
+
     ) {
         Box(
             contentAlignment = Alignment.Center,

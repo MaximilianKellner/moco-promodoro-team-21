@@ -16,7 +16,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -24,6 +23,7 @@ import com.example.promodoro_team_21.frontend.PermissionExplanationDialog
 import com.example.promodoro_team_21.frontend.SettingsManager
 import com.example.promodoro_team_21.frontend.SettingsScreen
 import com.example.promodoro_team_21.frontend.TimerAndTaskList
+import com.example.promodoro_team_21.services.TimerForegroundService
 import com.example.promodoro_team_21.ui.theme.Promodoroteam21Theme
 import com.example.promodoro_team_21.viewModel.NotificationViewModel
 import com.example.promodoro_team_21.viewModel.PomodoroTimerViewModel
@@ -42,13 +42,15 @@ class MainActivity : ComponentActivity() {
         var pomodoroTimerViewModel = PomodoroTimerViewModel(notificationViewModel)
         TimerRepository.timerViewModel = pomodoroTimerViewModel
 
+        // Berechtigung für Benachrichtigungen anfordern
         notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
-                // Permission was granted
+                // Berechtigung erteilt
                 ablehnungsCount = 0
                 TimerRepository.timerViewModel.startTimerInternal()
+                startTimerService(this) // Starte den ForegroundService
             } else {
-                // Permission denied
+                // Berechtigung verweigert
                 ablehnungsCount++
                 showDialog.value = true
             }
@@ -100,8 +102,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /*
-    override fun onPause() {
+ /*   override fun onPause() {
         super.onPause()
         TimerRepository.timerViewModel.saveTimerState()
     }
@@ -109,7 +110,6 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         TimerRepository.timerViewModel.restoreTimerState()
-        //checkAndRequestNotificationPermission()
     }
 
     override fun onDestroy() {
@@ -121,9 +121,18 @@ class MainActivity : ComponentActivity() {
         super.onNewIntent(intent)
         TimerRepository.timerViewModel.restoreTimerState()
     }
+*/
+    // Methode zum Starten des TimerForegroundService
+    private fun startTimerService(context: Context) {
+        val serviceIntent = Intent(context, TimerForegroundService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(serviceIntent)  // Für Android 8 und höher
+        } else {
+            context.startService(serviceIntent)  // Für ältere Android-Versionen
+        }
+    }
 
-     */
-
+    // Berechtigungen für Benachrichtigungen überprüfen und anfordern
     fun checkAndRequestNotificationPermission() {
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -135,6 +144,7 @@ class MainActivity : ComponentActivity() {
             }
         } else {
             TimerRepository.timerViewModel.startTimerInternal()
+            startTimerService(this) // Starte den ForegroundService
         }
     }
 }
