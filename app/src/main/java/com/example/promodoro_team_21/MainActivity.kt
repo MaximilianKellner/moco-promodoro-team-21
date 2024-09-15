@@ -37,23 +37,24 @@ class MainActivity : ComponentActivity() {
         val notificationViewModel = NotificationViewModel(this)
         TimerRepository.timerViewModel = PomodoroTimerViewModel(notificationViewModel)
 
-        notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-            if (isGranted) {
-                // Permission was granted
-                ablehnungsCount = 0
-                TimerRepository.timerViewModel.startTimerInternal()
-            } else {
-                // Permission denied
-                ablehnungsCount++
-                showDialog.value = true
+        notificationPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+                if (isGranted) {
+                    // Permission was granted
+                    ablehnungsCount = 0
+                    TimerRepository.timerViewModel.startTimerInternal()
+                } else {
+                    // Permission denied
+                    ablehnungsCount++
+                    showDialog.value = true
+                }
             }
-        }
 
         setContent {
             Promodoroteam21Theme {
                 if (showDialog.value) {
                     PermissionExplanationDialog(
-                        onDismiss = { showDialog.value = false},
+                        onDismiss = { showDialog.value = false },
                         ablehnungsCount = ablehnungsCount
                     )
                 }
@@ -72,15 +73,19 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
 
-    fun checkAndRequestNotificationPermission() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        fun checkAndRequestNotificationPermission() {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            } else {
+                TimerRepository.timerViewModel.startTimerInternal()
             }
-        } else {
-            TimerRepository.timerViewModel.startTimerInternal()
         }
     }
 }
