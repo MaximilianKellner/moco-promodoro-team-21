@@ -11,7 +11,8 @@ data class Todo(
     var id: Int = 0,
     var title : String,
     var category : Category,
-    var createdAt : Date
+    var createdAt : Date,
+    var isChecked : Boolean = false
 )
 
 //Enum für privat, arbeit, uni. Für das laden der todos in den entsprechenden Tabs
