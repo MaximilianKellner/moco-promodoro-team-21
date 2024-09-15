@@ -2,6 +2,7 @@ package com.example.promodoro_team_21.viewModel
 
 import androidx.lifecycle.*
 import com.example.promodoro_team_21.MainActivity
+import com.example.promodoro_team_21.frontend.SettingsManager
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
