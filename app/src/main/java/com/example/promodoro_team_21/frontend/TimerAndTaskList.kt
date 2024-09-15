@@ -17,6 +17,7 @@ fun TimerAndTaskList(
     notificationViewModel: NotificationViewModel,
     modifier: Modifier = Modifier,
     onPlayPauseClick: () -> Unit = {},
+    onSettingsClick: () -> Unit = {} // Füge den onSettingsClick-Callback hinzu
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -26,8 +27,8 @@ fun TimerAndTaskList(
         ) {
             Timer(
                 viewModel = timerViewModel,
-                onSettingsClick = {},
-                onPlayPauseClick = {},
+                onSettingsClick = onSettingsClick, // Übergib den Callback an Timer
+                onPlayPauseClick = onPlayPauseClick,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(30.dp)
@@ -36,6 +37,7 @@ fun TimerAndTaskList(
         }
     }
 }
+
 
 @Preview
 @Composable
