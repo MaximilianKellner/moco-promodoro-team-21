@@ -2,6 +2,7 @@ package com.example.promodoro_team_21.viewModel
 
 import androidx.lifecycle.*
 import com.example.promodoro_team_21.MainActivity
+import com.example.promodoro_team_21.frontend.SettingsManager
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -74,8 +75,7 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
             _isRunning.value = false  // Timer stoppen, wenn die Arbeitsphase endet
         }
         //Timer phasen wechsel notification
-        //TODO: Benachrichtigung, die den Nutzer darüber informiert, dass die Phase gewechselt wurde
-
+        sendSwitchPhaseNotification()
         updateNotification()
     }
 
@@ -85,7 +85,12 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
         val timeInSeconds = (_timeRemaining.value ?: 0) / 1000 % 60
         val timeFormatted = String.format("%02d:%02d", timeInMinutes, timeInSeconds)
 
-        notificationViewModel.updateNotification(statusText, timeFormatted)
+        notificationViewModel.updateLiveNotification(statusText, timeFormatted)
+    }
+
+    private fun sendSwitchPhaseNotification() {
+        val statusText = if (_isWorkingPhase.value == true) "Arbeitsphase" else "Pausephase"
+        notificationViewModel.sendSwitchPhaseNotification(statusText)
     }
 
     fun updateTimerDurations() {
