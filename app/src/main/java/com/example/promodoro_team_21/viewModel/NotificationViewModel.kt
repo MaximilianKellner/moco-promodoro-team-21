@@ -13,18 +13,17 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModel
 import com.example.promodoro_team_21.MainActivity
 import com.example.promodoro_team_21.R
-import com.example.promodoro_team_21.broadcastReceiver.NotificationReceiver
 
 class NotificationViewModel(val context: Context) : ViewModel() {
 
     companion object {
         const val NOTIFICATION_CHANNEL_ID = "pomodoro_liveNotification_channel"
-        //second channel for switch phase notification
         const val NOTIFICATION_CHANNEL_ID_SWITCH_PHASE = "pomodoro_switchPhase_channel"
     }
 
     init {
         createNotificationChannelLiveTimer()
+        createNotificationChannelSwitchPhase() // Erstelle den Switch Phase Notification Channel
     }
 
     private fun createNotificationChannelLiveTimer() {
@@ -41,7 +40,6 @@ class NotificationViewModel(val context: Context) : ViewModel() {
         }
     }
 
-    //function to create a notification for the switch phase
     private fun createNotificationChannelSwitchPhase() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Switch Phase Notification"
@@ -49,6 +47,7 @@ class NotificationViewModel(val context: Context) : ViewModel() {
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID_SWITCH_PHASE, name, importance).apply {
                 description = descriptionText
+                setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), null)
             }
             val notificationManager: NotificationManager =
                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -56,61 +55,8 @@ class NotificationViewModel(val context: Context) : ViewModel() {
         }
     }
 
-    fun updateLiveNotification(statusText: String, timeFormatted: String) {
-        if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
-            try {
-                val notification = createLiveTimerNotification(statusText, timeFormatted)
-                NotificationManagerCompat.from(context).notify(1, notification)
-            } catch (e: SecurityException) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    //notification which displays the current time on the timer and is able to pause and reset the timer
-    private fun createLiveTimerNotification(statusText: String, timeFormatted: String): Notification {
-        val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP // or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        }
-
-        val pendingIntent = PendingIntent.getActivity(
-            context,
-            0,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val toggleIntent = Intent(context, NotificationReceiver::class.java).apply {
-            action = "ACTION_TOGGLE_TIMER"
-        }
-        val togglePendingIntent: PendingIntent = PendingIntent.getBroadcast(
-            context, 1, toggleIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val resetIntent = Intent(context, NotificationReceiver::class.java).apply {
-            action = "ACTION_RESET"
-        }
-        val resetPendingIntent: PendingIntent = PendingIntent.getBroadcast(
-            context, 2, resetIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val playPauseText = if (TimerRepository.timerViewModel.isRunning.value == true) "Pause" else "Play"
-
-
-        return NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
-            .setContentTitle("Pomodoro Timer")
-            .setContentText("$statusText $timeFormatted")
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentIntent(pendingIntent)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
-            .addAction(R.drawable.ic_launcher_foreground, playPauseText, togglePendingIntent)  // Dynamischer Play/Pause-Button
-            .addAction(R.drawable.ic_launcher_foreground, "Reset", resetPendingIntent)  // Reset-Button
-            .build()
-    }
-
     private fun createSwitchPhaseNotification(statusText: String): Notification {
         val intent = Intent(context, MainActivity::class.java).apply {
-            // Verhindert, dass die Aktivität erneut gestartet wird, wenn sie bereits existiert
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
 
@@ -121,7 +67,7 @@ class NotificationViewModel(val context: Context) : ViewModel() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        return NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
+        return NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_SWITCH_PHASE)
             .setContentTitle("Pomodoro Timer")
             .setContentText(statusText)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
@@ -138,8 +84,39 @@ class NotificationViewModel(val context: Context) : ViewModel() {
                 NotificationManagerCompat.from(context).notify(2, notification)
             } catch (e: SecurityException) {
                 e.printStackTrace()
-                //TODO ask user to enable notification permission
+                requestNotificationPermission()
             }
         }
+    }
+
+    fun updateLiveNotification(statusText: String, timeFormatted: String) {
+        if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
+            try {
+                val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
+                    .setContentTitle(statusText)
+                    .setContentText(timeFormatted)
+                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .setPriority(NotificationCompat.PRIORITY_LOW)
+                    .build()
+
+                NotificationManagerCompat.from(context).notify(1, notification)
+            } catch (e: SecurityException) {
+                e.printStackTrace()
+                requestNotificationPermission()
+            }
+        } else {
+            requestNotificationPermission()
+        }
+    }
+
+    private fun requestNotificationPermission() {
+        // Zeige eine Benachrichtigung oder einen Dialog an, um den Benutzer zur Aktivierung der Benachrichtigungsberechtigung aufzufordern
+        val intent = Intent().apply {
+            action = "android.settings.APP_NOTIFICATION_SETTINGS"
+            putExtra("app_package", context.packageName)
+            putExtra("app_uid", context.applicationInfo.uid)
+            putExtra("android.provider.extra.APP_PACKAGE", context.packageName)
+        }
+        context.startActivity(intent)
     }
 }
