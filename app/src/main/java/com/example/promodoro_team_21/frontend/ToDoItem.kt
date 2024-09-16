@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,13 +32,10 @@ fun ToDoItem(
             .height(64.dp)
             .padding(horizontal = 8.dp)
             .background(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp))
-            .clickable {
-                // Optional: irgendwelche Aktionen beim Klicken auf den ganzen Bereich
-            }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start, // 1. Sicherstellen, dass der Inhalt von links angeordnet ist
+            horizontalArrangement = Arrangement.Start,
             modifier = Modifier
                 .fillMaxHeight()
                 .padding(start = 16.dp, end = 8.dp)
@@ -49,8 +47,8 @@ fun ToDoItem(
                 },
                 colors = CheckboxDefaults.colors(
                     checkmarkColor = MaterialTheme.colorScheme.primary,
-                    uncheckedColor = MaterialTheme.colorScheme.primary, // Farbe der Checkbox-Rand
-                    checkedColor = MaterialTheme.colorScheme.onPrimary // Hintergrundfarbe der Checkbox, wenn aktiviert
+                    uncheckedColor = MaterialTheme.colorScheme.primary,
+                    checkedColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
             Spacer(modifier = Modifier.width(8.dp))
@@ -58,13 +56,14 @@ fun ToDoItem(
                 text = title,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.W500,
-                color = Color.White,
-                modifier = Modifier.weight(1f) // 2. Hinzufügen des Gewicht-Modifiers, damit der Text den verbleibenden Raum einnimmt
+                color = if (isChecked) Color.Gray else Color.White,
+                textDecoration = if (isChecked) TextDecoration.LineThrough else TextDecoration.None,
+                modifier = Modifier.weight(1f)
             )
             IconButton(
                 onClick = { onDelete() },
                 colors = IconButtonDefaults.iconButtonColors(containerColor = Color.Transparent),
-                modifier = Modifier.align(Alignment.CenterVertically) // 3. Sicherstellen, dass der Button vertikal zentriert ist
+                modifier = Modifier.align(Alignment.CenterVertically)
             ) {
                 Icon(
                     imageVector = Icons.Default.Delete,
