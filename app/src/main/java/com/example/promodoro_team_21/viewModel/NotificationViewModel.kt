@@ -70,7 +70,7 @@ class NotificationViewModel(val context: Context) : ViewModel() {
         return NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_SWITCH_PHASE)
             .setContentTitle("Pomodoro Timer")
             .setContentText(statusText)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_timer)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
@@ -95,7 +95,7 @@ class NotificationViewModel(val context: Context) : ViewModel() {
                 val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
                     .setContentTitle(statusText)
                     .setContentText(timeFormatted)
-                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .setSmallIcon(R.drawable.ic_timer)
                     .setPriority(NotificationCompat.PRIORITY_LOW)
                     .build()
 
