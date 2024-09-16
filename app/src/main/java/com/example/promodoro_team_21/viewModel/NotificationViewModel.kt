@@ -13,6 +13,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModel
 import com.example.promodoro_team_21.MainActivity
 import com.example.promodoro_team_21.R
+import com.example.promodoro_team_21.broadcastReceiver.NotificationReceiver
 
 class NotificationViewModel(val context: Context) : ViewModel() {
 
@@ -90,6 +91,34 @@ class NotificationViewModel(val context: Context) : ViewModel() {
     }
 
     fun updateLiveNotification(statusText: String, timeFormatted: String) {
+
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val toggleIntent = Intent(context, NotificationReceiver::class.java).apply {
+            action = "ACTION_TOGGLE_TIMER"
+        }
+        val togglePendingIntent: PendingIntent = PendingIntent.getBroadcast(
+            context, 1, toggleIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val resetIntent = Intent(context, NotificationReceiver::class.java).apply {
+            action = "ACTION_RESET"
+        }
+        val resetPendingIntent: PendingIntent = PendingIntent.getBroadcast(
+            context, 2, resetIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val playPauseText = if (TimerRepository.timerViewModel.isRunning.value == true) "Pause" else "Play"
+
         if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
             try {
                 val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
@@ -97,6 +126,9 @@ class NotificationViewModel(val context: Context) : ViewModel() {
                     .setContentText(timeFormatted)
                     .setSmallIcon(R.drawable.ic_timer)
                     .setPriority(NotificationCompat.PRIORITY_LOW)
+                    .setContentIntent(pendingIntent)  // Ensure this line is present
+                    .addAction(R.drawable.ic_launcher_foreground, playPauseText, togglePendingIntent)  // Dynamischer Play/Pause-Button
+                    .addAction(R.drawable.ic_launcher_foreground, "Reset", resetPendingIntent)  // Reset-Button
                     .build()
 
                 NotificationManagerCompat.from(context).notify(1, notification)
