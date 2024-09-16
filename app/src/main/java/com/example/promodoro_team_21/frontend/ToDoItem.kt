@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,13 +59,14 @@ fun ToDoItem(
                 text = title,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.W500,
-                color = Color.White,
-                modifier = Modifier.weight(1f) // 2. Hinzufügen des Gewicht-Modifiers, damit der Text den verbleibenden Raum einnimmt
+                color = if (isChecked) Color.Gray else Color.White,
+                textDecoration = if (isChecked) TextDecoration.LineThrough else TextDecoration.None,
+                modifier = Modifier.weight(1f)
             )
             IconButton(
                 onClick = { onDelete() },
                 colors = IconButtonDefaults.iconButtonColors(containerColor = Color.Transparent),
-                modifier = Modifier.align(Alignment.CenterVertically) // 3. Sicherstellen, dass der Button vertikal zentriert ist
+                modifier = Modifier.align(Alignment.CenterVertically) //Sicherstellen, dass der Button vertikal zentriert ist
             ) {
                 Icon(
                     imageVector = Icons.Default.Delete,

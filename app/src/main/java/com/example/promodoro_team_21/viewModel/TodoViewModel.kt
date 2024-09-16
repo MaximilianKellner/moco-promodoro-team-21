@@ -41,11 +41,9 @@ class TodoViewModel: ViewModel() {
         return todoDao.getTodoByCategory(category)
     }
 
-    fun editToDo(todoItem: Todo, newTitle: String) {
-        todoItem.title = newTitle
-
-        viewModelScope.launch {
-            todoDao.editTodoTitle(newTitle, todoItem.id)
+    fun updateTodo(id: Int, isChecked: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            todoDao.update(id = id, isChecked = isChecked)
         }
     }
 }
