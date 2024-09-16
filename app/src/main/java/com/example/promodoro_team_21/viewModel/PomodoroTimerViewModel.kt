@@ -1,7 +1,6 @@
 package com.example.promodoro_team_21.viewModel
 
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.lifecycle.*
 import com.example.promodoro_team_21.MainActivity
 import com.example.promodoro_team_21.frontend.SettingsManager
@@ -19,6 +18,7 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
         private const val PREFS_NAME = "PomodoroTimerPrefs"
         private const val KEY_TIME_REMAINING = "timeRemaining"
         private const val KEY_IS_WORKING_PHASE = "isWorkingPhase"
+        private const val KEY_IS_RUNNING = "isRunning"
     }
 
     private val _timeRemaining = MutableLiveData<Long>(WORK_DURATION)
@@ -45,7 +45,7 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
 
     fun startTimerInternal() {
         _isRunning.value = true
-        updateNotification()  // Benachrichtigung aktualisieren, um "Pause"-Schaltfläche anzuzeigen
+        updateNotification()
         timerJob = viewModelScope.launch {
             while ((_timeRemaining.value ?: 0) > 0) {
                 delay(1000L)
@@ -60,30 +60,25 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
     fun pauseTimer() {
         timerJob?.cancel()  // Pausiert den Timer, ohne die verbleibende Zeit zurückzusetzen
         _isRunning.value = false
-        updateNotification()  // Benachrichtigung aktualisieren, um "Play"-Schaltfläche anzuzeigen
+        updateNotification()
     }
 
     fun resetTimer() {
         timerJob?.cancel()
         _isRunning.value = false
-        _timeRemaining.value = WORK_DURATION  // Setze den Timer auf WORK_DURATION zurück
-        _isWorkingPhase.value = true // Setze die Arbeitsphase zurück
+        _timeRemaining.value = if (_isWorkingPhase.value == true) WORK_DURATION else BREAK_DURATION
         updateNotification()
     }
 
     private fun switchPhase() {
         if (_isWorkingPhase.value == true) {
-            // Wechsel in die Pausenphase
             _isWorkingPhase.value = false
             _timeRemaining.value = BREAK_DURATION
-            _isRunning.value = false  // Timer stoppen, wenn die Arbeitsphase endet
         } else {
-            // Wechsel zurück in die Arbeitsphase
             _isWorkingPhase.value = true
             _timeRemaining.value = WORK_DURATION
-            _isRunning.value = false  // Timer stoppen, wenn die Arbeitsphase endet
         }
-        //Timer phasen wechsel notification
+        _isRunning.value = false
         sendSwitchPhaseNotification()
         updateNotification()
     }
@@ -114,17 +109,24 @@ class PomodoroTimerViewModel(private val _notificationViewModel: NotificationVie
         with(sharedPreferences.edit()) {
             putLong(KEY_TIME_REMAINING, _timeRemaining.value ?: WORK_DURATION)
             putBoolean(KEY_IS_WORKING_PHASE, _isWorkingPhase.value ?: true)
+            putBoolean(KEY_IS_RUNNING, _isRunning.value ?: false)
             apply()
         }
     }
 
     fun restoreTimerState() {
         loadTimerState()
+
+        // Wenn der Timer läuft und die App geöffnet wird, setze den Timer fort
+        if (_isRunning.value == true) {
+            startTimerInternal()
+        }
     }
 
     private fun loadTimerState() {
         val sharedPreferences = notificationViewModel.context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         _timeRemaining.value = sharedPreferences.getLong(KEY_TIME_REMAINING, WORK_DURATION)
         _isWorkingPhase.value = sharedPreferences.getBoolean(KEY_IS_WORKING_PHASE, true)
+        _isRunning.value = sharedPreferences.getBoolean(KEY_IS_RUNNING, false)
     }
 }

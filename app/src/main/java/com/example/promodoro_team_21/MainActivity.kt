@@ -39,18 +39,16 @@ class MainActivity : ComponentActivity() {
 
         // Initialisiere das ViewModel im TimerRepository
         val notificationViewModel = NotificationViewModel(this)
-        var pomodoroTimerViewModel = PomodoroTimerViewModel(notificationViewModel)
+        val pomodoroTimerViewModel = PomodoroTimerViewModel(notificationViewModel)
         TimerRepository.timerViewModel = pomodoroTimerViewModel
 
         // Berechtigung für Benachrichtigungen anfordern
         notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
-                // Berechtigung erteilt
                 ablehnungsCount = 0
                 TimerRepository.timerViewModel.startTimerInternal()
                 startTimerService(this) // Starte den ForegroundService
             } else {
-                // Berechtigung verweigert
                 ablehnungsCount++
                 showDialog.value = true
             }
@@ -62,7 +60,7 @@ class MainActivity : ComponentActivity() {
 
                 if (showDialog.value) {
                     PermissionExplanationDialog(
-                        onDismiss = { showDialog.value = false},
+                        onDismiss = { showDialog.value = false },
                         ablehnungsCount = ablehnungsCount
                     )
                 }
@@ -92,7 +90,7 @@ class MainActivity : ComponentActivity() {
                             navController.popBackStack() // Zurück zum vorherigen Bildschirm
                         },
                             onSettingsChanged = { newSettings ->
-                                // Hier aktualisieren wir die Einstellungen und das ViewModel
+                                // Aktualisieren der Einstellungen und des ViewModels
                                 SettingsManager.updateSettings(newSettings)
                                 pomodoroTimerViewModel.updateTimerDurations()
                             })
@@ -102,9 +100,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 
- /*   override fun onPause() {
-        super.onPause()
-        TimerRepository.timerViewModel.saveTimerState()
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        TimerRepository.timerViewModel.restoreTimerState()
     }
 
     override fun onResume() {
@@ -112,16 +110,6 @@ class MainActivity : ComponentActivity() {
         TimerRepository.timerViewModel.restoreTimerState()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        TimerRepository.timerViewModel.saveTimerState()
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        TimerRepository.timerViewModel.restoreTimerState()
-    }
-*/
     // Methode zum Starten des TimerForegroundService
     private fun startTimerService(context: Context) {
         val serviceIntent = Intent(context, TimerForegroundService::class.java)

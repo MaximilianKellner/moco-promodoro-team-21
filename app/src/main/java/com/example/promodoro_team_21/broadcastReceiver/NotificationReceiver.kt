@@ -9,6 +9,8 @@ class NotificationReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action
+        TimerRepository.timerViewModel.restoreTimerState()  // Zustand des Timers synchronisieren
+
         val viewModel = TimerRepository.timerViewModel  // Greife auf die Singleton-Instanz zu
 
         when (action) {
@@ -16,7 +18,7 @@ class NotificationReceiver : BroadcastReceiver() {
                 if (viewModel.isRunning.value == true) {
                     viewModel.pauseTimer()  // Pausiere den Timer, wenn er läuft
                 } else {
-                    viewModel.startTimer()  // Starte den Timer, wenn er pausiert ist
+                    viewModel.startTimerInternal()  // Starte den Timer, wenn er pausiert ist
                 }
                 viewModel.saveTimerState()  // Speichere den Timer-Status
             }
