@@ -62,14 +62,15 @@ fun HalfScreenWithTabBarAndList() {
             ) {
                 items(todoItems.size) { index ->
                     val item = todoItems[index]
-                    var isCheckedState by remember { mutableStateOf(false) }
+                    val isCheckedState = remember { mutableStateOf(item.isChecked) }
 
                     ToDoItem(
                         title = item.title,
-                        isChecked = isCheckedState,  // Zustand der Checkbox
+                        isChecked = isCheckedState.value,  // Zustand der Checkbox
                         onCheckChange = { isChecked ->
-                            isCheckedState = isChecked
-                            // Hier könnte man den Zustand speichern oder andere Aktionen ausführen
+                            isCheckedState.value = isChecked
+                            //save checked state to database
+                            todoVM.updateTodo(item.id, isCheckedState.value)
                         },
                         onDelete = {
                             todoVM.deleteTodo(item.id) // Lösche das Item, wenn der Mülleimer-Button geklickt wird
